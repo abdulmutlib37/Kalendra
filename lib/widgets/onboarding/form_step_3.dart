@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
+
+import 'dart:convert';
 
 import '../../theme/app_colors.dart';
 import '../onboarding_header.dart';
@@ -42,6 +46,113 @@ class FormStep3 extends StatelessWidget {
   }
 }
 
+class _EmbeddedPngFromSvgAsset extends StatelessWidget {
+  const _EmbeddedPngFromSvgAsset({
+    required this.svgAssetPath,
+    required this.width,
+    required this.height,
+  });
+
+  final String svgAssetPath;
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: FutureBuilder<String>(
+        future: rootBundle.loadString(svgAssetPath),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const SizedBox.shrink();
+          }
+
+          final pngBytes = _firstEmbeddedPngBytes(snapshot.data!);
+          if (pngBytes == null) {
+            return const SizedBox.shrink();
+          }
+
+          return Image.memory(pngBytes, fit: BoxFit.contain);
+        },
+      ),
+    );
+  }
+}
+
+class _OutlookEmbeddedPngLogo extends StatelessWidget {
+  const _OutlookEmbeddedPngLogo();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 186,
+      height: 48,
+      child: FutureBuilder<String>(
+        future: rootBundle.loadString('assets/images/outlook.svg'),
+        builder: _build,
+      ),
+    );
+  }
+
+  static Widget _build(BuildContext context, AsyncSnapshot<String> snapshot) {
+    if (!snapshot.hasData) {
+      return const SizedBox.shrink();
+    }
+
+    final bytes = _allEmbeddedPngBytes(snapshot.data!);
+    if (bytes.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final iconPng = bytes.isNotEmpty ? bytes[0] : null;
+    final textPng = bytes.length >= 2 ? bytes[1] : null;
+
+    return Stack(
+      children: [
+        if (iconPng != null)
+          Positioned(
+            left: 0,
+            top: 0,
+            width: 48,
+            height: 48,
+            child: Image.memory(iconPng, fit: BoxFit.contain),
+          ),
+        if (textPng != null)
+          Positioned(
+            left: 59,
+            top: 14,
+            width: 88,
+            height: 20,
+            child: Image.memory(textPng, fit: BoxFit.contain),
+          ),
+      ],
+    );
+  }
+}
+
+Uint8List? _firstEmbeddedPngBytes(String svgContent) {
+  final matches = _allEmbeddedPngBytes(svgContent);
+  if (matches.isEmpty) return null;
+  return matches.first;
+}
+
+List<Uint8List> _allEmbeddedPngBytes(String svgContent) {
+  final regex = RegExp(r'data:image\/png;base64,([A-Za-z0-9+/=]+)');
+  final out = <Uint8List>[];
+  for (final match in regex.allMatches(svgContent)) {
+    final b64 = match.group(1);
+    if (b64 == null || b64.isEmpty) continue;
+    try {
+      out.add(base64Decode(b64));
+    } catch (_) {
+      // ignore decode failures
+    }
+  }
+  return out;
+}
+
 class OnboardingMiddleSection extends StatefulWidget {
   const OnboardingMiddleSection({super.key});
 
@@ -83,6 +194,14 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
   Widget _buildSelectableContainer(int index) {
     final isSelected = selectedIndex == index;
 
+    final Widget logo = index == 0
+        ? const _EmbeddedPngFromSvgAsset(
+            svgAssetPath: 'assets/images/google.svg',
+            width: 214,
+            height: 50,
+          )
+        : const _OutlookEmbeddedPngLogo();
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -108,7 +227,21 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                 )
               : null,
         ),
-        child: Container(),
+        child: Row(
+          children: [
+            Flexible(child: logo),
+            const Spacer(),
+            if (isSelected)
+              SizedBox(
+                width: 32,
+                height: 32,
+                child: SvgPicture.asset(
+                  'assets/images/CheckCircle.svg',
+                  fit: BoxFit.contain,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

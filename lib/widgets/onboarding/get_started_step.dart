@@ -48,26 +48,29 @@ class GetStartedStep extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    SizedBox(
-                      width: 347,
-                      height: 72,
-                      child: Center(
-                        child: Text(
-                          "You’re all set! Let’s plan\nyour next meeting.",
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.headline28ExtraBold(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(
+                        "You’re all set! Let’s plan\nyour next meeting.",
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.headline28ExtraBold().copyWith(
+                          letterSpacing: -0.84,
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    SizedBox(
-                      width: 267,
-                      height: 52,
-                      child: Center(
-                        child: Text(
-                          'You can change this anytime\nin app settings.',
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.body20Regular(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(
+                        'You can change this anytime in app settings.',
+                        textAlign: TextAlign.center,
+                        strutStyle: const StrutStyle(
+                          height: 36 / 20,
+                          forceStrutHeight: true,
+                        ),
+                        style: AppTextStyles.body20Regular().copyWith(
+                          height: 36 / 20,
+                          letterSpacing: -0.6,
                         ),
                       ),
                     ),
