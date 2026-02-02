@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../onboarding_header.dart';
-import '../primary_button.dart';
+import 'form_step_buttons.dart';
 
 class FormStep4 extends StatelessWidget {
   const FormStep4({
     super.key,
     required this.onNextPressed,
+    required this.onSkipPressed,
     required this.onBackPressed,
   });
 
   final VoidCallback onNextPressed;
+  final VoidCallback onSkipPressed;
   final VoidCallback onBackPressed;
 
   @override
@@ -40,7 +42,10 @@ class FormStep4 extends StatelessWidget {
                 ),
               ],
             ),
-            PrimaryButton(label: 'Next', onPressed: onNextPressed),
+            FormStepButtons(
+              onSkipPressed: onSkipPressed,
+              onContinuePressed: onNextPressed,
+            ),
           ],
         ),
       ),

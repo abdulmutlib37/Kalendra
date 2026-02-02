@@ -15,40 +15,35 @@ class OnboardingHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 98,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          if (showBack)
-            Positioned(
-              left: 20,
-              top: 54,
-              width: 44,
-              height: 44,
-              child: IconButton(
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        child: Row(
+          children: [
+            if (showBack)
+              IconButton(
                 padding: EdgeInsets.zero,
-                alignment: Alignment.center,
-                constraints: const BoxConstraints.tightFor(
-                  width: 44,
-                  height: 44,
-                ),
+                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                 onPressed: onBackPressed,
                 icon: const Icon(
                   Icons.arrow_back,
                   color: AppColors.textBlack,
                 ),
+              )
+            else
+              const SizedBox(width: 44, height: 44),
+            Expanded(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 200),
+                  child: const OnboardingLogo(),
+                ),
               ),
             ),
-          const Positioned(
-            left: 132,
-            top: 58,
-            width: 166,
-            height: 36,
-            child: OnboardingLogo(),
-          ),
-        ],
+            const SizedBox(width: 44, height: 44),
+          ],
+        ),
       ),
     );
   }

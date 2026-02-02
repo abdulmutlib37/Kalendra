@@ -46,6 +46,14 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
     );
   }
 
+  void _skipToGetStarted() {
+    _controller.animateToPage(
+      6,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOut,
+    );
+  }
+
   void _finish(BuildContext context) {
     Navigator.pushReplacementNamed(context, AppRoutes.home);
   }
@@ -74,11 +82,31 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
       },
       children: [
         IntroStep(onNextPressed: _goNext),
-        FormStep1(onNextPressed: _goNext, onBackPressed: _goBack),
-        FormStep2(onNextPressed: _goNext, onBackPressed: _goBack),
-        FormStep3(onNextPressed: _goNext, onBackPressed: _goBack),
-        FormStep4(onNextPressed: _goNext, onBackPressed: _goBack),
-        FormStep5(onNextPressed: _goNext, onBackPressed: _goBack),
+        FormStep1(
+          onNextPressed: _goNext,
+          onSkipPressed: _skipToGetStarted,
+          onBackPressed: _goBack,
+        ),
+        FormStep2(
+          onNextPressed: _goNext,
+          onSkipPressed: _skipToGetStarted,
+          onBackPressed: _goBack,
+        ),
+        FormStep3(
+          onNextPressed: _goNext,
+          onSkipPressed: _skipToGetStarted,
+          onBackPressed: _goBack,
+        ),
+        FormStep4(
+          onNextPressed: _goNext,
+          onSkipPressed: _skipToGetStarted,
+          onBackPressed: _goBack,
+        ),
+        FormStep5(
+          onNextPressed: _goNext,
+          onSkipPressed: _skipToGetStarted,
+          onBackPressed: _goBack,
+        ),
         GetStartedStep(onGetStartedPressed: () => _finish(context), onBackPressed: _goBack),
       ],
     );
