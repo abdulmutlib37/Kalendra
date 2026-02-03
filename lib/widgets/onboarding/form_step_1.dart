@@ -10,11 +10,15 @@ class FormStep1 extends StatelessWidget {
     required this.onNextPressed,
     required this.onSkipPressed,
     required this.onBackPressed,
+    required this.selectedOptions,
+    required this.onSelectedOptionsChanged,
   });
 
   final VoidCallback onNextPressed;
   final VoidCallback onSkipPressed;
   final VoidCallback onBackPressed;
+  final Set<int> selectedOptions;
+  final ValueChanged<Set<int>> onSelectedOptionsChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +29,17 @@ class FormStep1 extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            OnboardingHeader(showBack: true, onBackPressed: onBackPressed),
+            OnboardingHeader(
+              showBack: true,
+              onBackPressed: onBackPressed,
+              stepLabel: '1/4',
+            ),
             Expanded(
               child: SingleChildScrollView(
-                child: OnboardingMiddleSection(),
+                child: OnboardingMiddleSection(
+                  selectedOptions: selectedOptions,
+                  onSelectedOptionsChanged: onSelectedOptionsChanged,
+                ),
               ),
             ),
             FormStepButtons(
@@ -42,17 +53,17 @@ class FormStep1 extends StatelessWidget {
   }
 }
 
-class OnboardingMiddleSection extends StatefulWidget {
-  const OnboardingMiddleSection({super.key});
+class OnboardingMiddleSection extends StatelessWidget {
+  const OnboardingMiddleSection({
+    super.key,
+    required this.selectedOptions,
+    required this.onSelectedOptionsChanged,
+  });
 
-  @override
-  State<OnboardingMiddleSection> createState() => _OnboardingMiddleSectionState();
-}
+  final Set<int> selectedOptions;
+  final ValueChanged<Set<int>> onSelectedOptionsChanged;
 
-class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
-  Set<int> selectedOptions = {};
-
-  final List<String> options = [
+  static const List<String> options = [
     'Managing multiple calendars is chaotic',
     'I often schedule meetings on the go.',
     'My calendar does not reflect my travel times',
@@ -99,13 +110,13 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
             padding: const EdgeInsets.only(bottom: 12),
             child: GestureDetector(
               onTap: () {
-                setState(() {
-                  if (isSelected) {
-                    selectedOptions.remove(index);
-                  } else {
-                    selectedOptions.add(index);
-                  }
-                });
+                final next = Set<int>.from(selectedOptions);
+                if (isSelected) {
+                  next.remove(index);
+                } else {
+                  next.add(index);
+                }
+                onSelectedOptionsChanged(next);
               },
               child: Container(
                 height: 64,

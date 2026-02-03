@@ -25,7 +25,9 @@ class IntroStep extends StatelessWidget {
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    style: AppTextStyles.headline48ExtraBold(),
+                    style: AppTextStyles.headline48ExtraBold().copyWith(
+                      letterSpacing: -1.44,
+                    ),
                     children: const [
                       TextSpan(text: "Let's "),
                       TextSpan(
@@ -40,7 +42,9 @@ class IntroStep extends StatelessWidget {
                 Text(
                   'this only takes a moment',
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.body20Regular(),
+                  style: AppTextStyles.body20Regular().copyWith(
+                    letterSpacing: -0.6,
+                  ),
                 ),
               ],
             ),

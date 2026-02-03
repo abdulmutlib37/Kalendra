@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/app_colors.dart';
 import 'onboarding_logo.dart';
@@ -8,10 +9,12 @@ class OnboardingHeader extends StatelessWidget {
     super.key,
     required this.showBack,
     this.onBackPressed,
+    this.stepLabel,
   });
 
   final bool showBack;
   final VoidCallback? onBackPressed;
+  final String? stepLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +27,16 @@ class OnboardingHeader extends StatelessWidget {
             if (showBack)
               IconButton(
                 padding: EdgeInsets.zero,
+                iconSize: 44,
                 constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                 onPressed: onBackPressed,
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: AppColors.textBlack,
+                icon: SvgPicture.asset(
+                  'assets/images/Icon.svg',
+                  fit: BoxFit.contain,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.textBlack,
+                    BlendMode.srcIn,
+                  ),
                 ),
               )
             else
@@ -41,7 +49,22 @@ class OnboardingHeader extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 44, height: 44),
+            SizedBox(
+              width: 44,
+              height: 44,
+              child: stepLabel == null
+                  ? null
+                  : Center(
+                      child: Text(
+                        stepLabel!,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textBlack,
+                        ),
+                      ),
+                    ),
+            ),
           ],
         ),
       ),

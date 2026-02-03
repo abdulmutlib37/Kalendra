@@ -10,11 +10,23 @@ class FormStep2 extends StatelessWidget {
     required this.onNextPressed,
     required this.onSkipPressed,
     required this.onBackPressed,
+    required this.selectedNatureOfWork,
+    required this.selectedCurrentPosition,
+    required this.selectedTimeManagementGoal,
+    required this.onNatureOfWorkChanged,
+    required this.onCurrentPositionChanged,
+    required this.onTimeManagementGoalChanged,
   });
 
   final VoidCallback onNextPressed;
   final VoidCallback onSkipPressed;
   final VoidCallback onBackPressed;
+  final String? selectedNatureOfWork;
+  final String? selectedCurrentPosition;
+  final String? selectedTimeManagementGoal;
+  final ValueChanged<String?> onNatureOfWorkChanged;
+  final ValueChanged<String?> onCurrentPositionChanged;
+  final ValueChanged<String?> onTimeManagementGoalChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +37,21 @@ class FormStep2 extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            OnboardingHeader(showBack: true, onBackPressed: onBackPressed),
+            OnboardingHeader(
+              showBack: true,
+              onBackPressed: onBackPressed,
+              stepLabel: '2/4',
+            ),
             Expanded(
               child: SingleChildScrollView(
-                child: OnboardingMiddleSection(),
+                child: OnboardingMiddleSection(
+                  selectedNatureOfWork: selectedNatureOfWork,
+                  selectedCurrentPosition: selectedCurrentPosition,
+                  selectedTimeManagementGoal: selectedTimeManagementGoal,
+                  onNatureOfWorkChanged: onNatureOfWorkChanged,
+                  onCurrentPositionChanged: onCurrentPositionChanged,
+                  onTimeManagementGoalChanged: onTimeManagementGoalChanged,
+                ),
               ),
             ),
             FormStepButtons(
@@ -43,7 +66,22 @@ class FormStep2 extends StatelessWidget {
 }
 
 class OnboardingMiddleSection extends StatefulWidget {
-  const OnboardingMiddleSection({super.key});
+  const OnboardingMiddleSection({
+    super.key,
+    required this.selectedNatureOfWork,
+    required this.selectedCurrentPosition,
+    required this.selectedTimeManagementGoal,
+    required this.onNatureOfWorkChanged,
+    required this.onCurrentPositionChanged,
+    required this.onTimeManagementGoalChanged,
+  });
+
+  final String? selectedNatureOfWork;
+  final String? selectedCurrentPosition;
+  final String? selectedTimeManagementGoal;
+  final ValueChanged<String?> onNatureOfWorkChanged;
+  final ValueChanged<String?> onCurrentPositionChanged;
+  final ValueChanged<String?> onTimeManagementGoalChanged;
 
   @override
   State<OnboardingMiddleSection> createState() => _OnboardingMiddleSectionState();
@@ -87,6 +125,28 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    selectedNatureOfWork = widget.selectedNatureOfWork;
+    selectedCurrentPosition = widget.selectedCurrentPosition;
+    selectedTimeManagementGoal = widget.selectedTimeManagementGoal;
+  }
+
+  @override
+  void didUpdateWidget(covariant OnboardingMiddleSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedNatureOfWork != widget.selectedNatureOfWork) {
+      selectedNatureOfWork = widget.selectedNatureOfWork;
+    }
+    if (oldWidget.selectedCurrentPosition != widget.selectedCurrentPosition) {
+      selectedCurrentPosition = widget.selectedCurrentPosition;
+    }
+    if (oldWidget.selectedTimeManagementGoal != widget.selectedTimeManagementGoal) {
+      selectedTimeManagementGoal = widget.selectedTimeManagementGoal;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,6 +187,7 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                     selectedNatureOfWork = value;
                     openDropdownIndex = null;
                   });
+                  widget.onNatureOfWorkChanged(value);
                 },
               ),
               const SizedBox(height: 24),
@@ -140,6 +201,7 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                     selectedCurrentPosition = value;
                     openDropdownIndex = null;
                   });
+                  widget.onCurrentPositionChanged(value);
                 },
               ),
               const SizedBox(height: 24),
@@ -153,6 +215,7 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                     selectedTimeManagementGoal = value;
                     openDropdownIndex = null;
                   });
+                  widget.onTimeManagementGoalChanged(value);
                 },
               ),
             ],

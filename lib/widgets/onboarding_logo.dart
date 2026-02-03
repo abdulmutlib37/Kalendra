@@ -2,9 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-import '../theme/app_colors.dart';
 
 class OnboardingLogo extends StatelessWidget {
   const OnboardingLogo({super.key});
@@ -14,13 +11,10 @@ class OnboardingLogo extends StatelessWidget {
     return SizedBox(
       width: 166,
       height: 36,
-      child: Stack(
-        clipBehavior: Clip.none,
+      child: Row(
         children: [
           // TODO: Replace with Image.asset for logo
-          Positioned(
-            left: 0,
-            top: 0,
+          SizedBox(
             width: 35.62,
             height: 36,
             child: Stack(
@@ -75,20 +69,13 @@ class OnboardingLogo extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            left: 44.22,
-            top: 0,
-            child: Text(
-              'Kalendra',
-              style: GoogleFonts.lexend(
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textBlack,
-                height: 1,
-              ),
-              maxLines: 1,
-              softWrap: false,
-              overflow: TextOverflow.visible,
+          const SizedBox(width: 8),
+          Expanded(
+            child: SvgPicture.asset(
+              'assets/images/kalendra_text.svg',
+              height: 36,
+              fit: BoxFit.contain,
+              alignment: Alignment.centerLeft,
             ),
           ),
         ],

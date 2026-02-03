@@ -3,10 +3,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import '../../theme/app_colors.dart';
 import '../onboarding_header.dart';
 import 'form_step_buttons.dart';
+
+enum CalendarProvider {
+  google,
+  outlook,
+}
 
 class FormStep3 extends StatelessWidget {
   const FormStep3({
@@ -14,11 +20,15 @@ class FormStep3 extends StatelessWidget {
     required this.onNextPressed,
     required this.onSkipPressed,
     required this.onBackPressed,
+    required this.selectedProviders,
+    required this.onSelectedProvidersChanged,
   });
 
   final VoidCallback onNextPressed;
   final VoidCallback onSkipPressed;
   final VoidCallback onBackPressed;
+  final Set<CalendarProvider> selectedProviders;
+  final ValueChanged<Set<CalendarProvider>> onSelectedProvidersChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +39,17 @@ class FormStep3 extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            OnboardingHeader(showBack: true, onBackPressed: onBackPressed),
+            OnboardingHeader(
+              showBack: true,
+              onBackPressed: onBackPressed,
+              stepLabel: '3/4',
+            ),
             Expanded(
               child: SingleChildScrollView(
-                child: OnboardingMiddleSection(),
+                child: OnboardingMiddleSection(
+                  selectedProviders: selectedProviders,
+                  onSelectedProvidersChanged: onSelectedProvidersChanged,
+                ),
               ),
             ),
             FormStepButtons(
@@ -46,7 +63,7 @@ class FormStep3 extends StatelessWidget {
   }
 }
 
-class _EmbeddedPngFromSvgAsset extends StatelessWidget {
+class _EmbeddedPngFromSvgAsset extends StatefulWidget {
   const _EmbeddedPngFromSvgAsset({
     required this.svgAssetPath,
     required this.width,
@@ -58,78 +75,139 @@ class _EmbeddedPngFromSvgAsset extends StatelessWidget {
   final double height;
 
   @override
+  State<_EmbeddedPngFromSvgAsset> createState() => _EmbeddedPngFromSvgAssetState();
+}
+
+class _EmbeddedPngFromSvgAssetState extends State<_EmbeddedPngFromSvgAsset> {
+  late final Future<ui.Image?> _futureImage = _loadAndTrim();
+
+  Future<ui.Image?> _loadAndTrim() async {
+    final svg = await rootBundle.loadString(widget.svgAssetPath);
+    final pngBytes = _firstEmbeddedPngBytes(svg);
+    if (pngBytes == null) return null;
+    return _decodeAndTrimPng(pngBytes);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
-      height: height,
-      child: FutureBuilder<String>(
-        future: rootBundle.loadString(svgAssetPath),
+      width: widget.width,
+      height: widget.height,
+      child: FutureBuilder<ui.Image?>(
+        future: _futureImage,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const SizedBox.shrink();
-          }
-
-          final pngBytes = _firstEmbeddedPngBytes(snapshot.data!);
-          if (pngBytes == null) {
-            return const SizedBox.shrink();
-          }
-
-          return Image.memory(pngBytes, fit: BoxFit.contain);
+          final img = snapshot.data;
+          if (img == null) return const SizedBox.shrink();
+          return FittedBox(
+            fit: BoxFit.contain,
+            child: SizedBox(
+              width: img.width.toDouble(),
+              height: img.height.toDouble(),
+              child: RawImage(image: img),
+            ),
+          );
         },
       ),
     );
   }
 }
 
-class _OutlookEmbeddedPngLogo extends StatelessWidget {
-  const _OutlookEmbeddedPngLogo();
+class _OutlookLogo extends StatelessWidget {
+  const _OutlookLogo();
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 186,
+      width: 147,
       height: 48,
-      child: FutureBuilder<String>(
-        future: rootBundle.loadString('assets/images/outlook.svg'),
-        builder: _build,
-      ),
-    );
-  }
-
-  static Widget _build(BuildContext context, AsyncSnapshot<String> snapshot) {
-    if (!snapshot.hasData) {
-      return const SizedBox.shrink();
-    }
-
-    final bytes = _allEmbeddedPngBytes(snapshot.data!);
-    if (bytes.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    final iconPng = bytes.isNotEmpty ? bytes[0] : null;
-    final textPng = bytes.length >= 2 ? bytes[1] : null;
-
-    return Stack(
-      children: [
-        if (iconPng != null)
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
           Positioned(
             left: 0,
             top: 0,
             width: 48,
             height: 48,
-            child: Image.memory(iconPng, fit: BoxFit.contain),
+            child: _EmbeddedPngFromSvgAsset(
+              svgAssetPath: 'assets/images/Outlook_logo.svg',
+              width: 48,
+              height: 48,
+            ),
           ),
-        if (textPng != null)
           Positioned(
             left: 59,
             top: 14,
             width: 88,
             height: 20,
-            child: Image.memory(textPng, fit: BoxFit.contain),
+            child: Image.asset(
+              'assets/images/Outlook_text.png',
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.high,
+              isAntiAlias: true,
+            ),
           ),
-      ],
+        ],
+      ),
     );
   }
+}
+
+Future<ui.Image?> _decodeAndTrimPng(Uint8List bytes) async {
+  try {
+    final codec = await ui.instantiateImageCodec(bytes);
+    final frame = await codec.getNextFrame();
+    final image = frame.image;
+
+    final trimmed = await _trimTransparentPadding(image);
+    if (trimmed == null) return null;
+    return trimmed;
+  } catch (_) {
+    return null;
+  }
+}
+
+Future<ui.Image?> _trimTransparentPadding(ui.Image image) async {
+  final rgba = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+  if (rgba == null) return image;
+
+  final data = rgba.buffer.asUint8List();
+  final width = image.width;
+  final height = image.height;
+
+  int minX = width;
+  int minY = height;
+  int maxX = -1;
+  int maxY = -1;
+
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      final i = (y * width + x) * 4;
+      final a = data[i + 3];
+      if (a == 0) continue;
+      if (x < minX) minX = x;
+      if (y < minY) minY = y;
+      if (x > maxX) maxX = x;
+      if (y > maxY) maxY = y;
+    }
+  }
+
+  if (maxX < minX || maxY < minY) {
+    return image;
+  }
+
+  final cropW = (maxX - minX + 1);
+  final cropH = (maxY - minY + 1);
+  return _cropImage(image, minX, minY, cropW, cropH);
+}
+
+Future<ui.Image> _cropImage(ui.Image image, int x, int y, int w, int h) async {
+  final recorder = ui.PictureRecorder();
+  final canvas = Canvas(recorder);
+  final src = Rect.fromLTWH(x.toDouble(), y.toDouble(), w.toDouble(), h.toDouble());
+  final dst = Rect.fromLTWH(0, 0, w.toDouble(), h.toDouble());
+  canvas.drawImageRect(image, src, dst, Paint());
+  final picture = recorder.endRecording();
+  return picture.toImage(w, h);
 }
 
 Uint8List? _firstEmbeddedPngBytes(String svgContent) {
@@ -153,15 +231,15 @@ List<Uint8List> _allEmbeddedPngBytes(String svgContent) {
   return out;
 }
 
-class OnboardingMiddleSection extends StatefulWidget {
-  const OnboardingMiddleSection({super.key});
+class OnboardingMiddleSection extends StatelessWidget {
+  const OnboardingMiddleSection({
+    super.key,
+    required this.selectedProviders,
+    required this.onSelectedProvidersChanged,
+  });
 
-  @override
-  State<OnboardingMiddleSection> createState() => _OnboardingMiddleSectionState();
-}
-
-class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
-  int? selectedIndex;
+  final Set<CalendarProvider> selectedProviders;
+  final ValueChanged<Set<CalendarProvider>> onSelectedProvidersChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -184,30 +262,36 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
           ),
         ),
         const SizedBox(height: 32),
-        _buildSelectableContainer(0),
+        _buildSelectableContainer(CalendarProvider.google),
         const SizedBox(height: 16),
-        _buildSelectableContainer(1),
+        _buildSelectableContainer(CalendarProvider.outlook),
       ],
     );
   }
 
-  Widget _buildSelectableContainer(int index) {
-    final isSelected = selectedIndex == index;
+  void _toggle(CalendarProvider provider) {
+    final next = Set<CalendarProvider>.from(selectedProviders);
+    if (next.contains(provider)) {
+      next.remove(provider);
+    } else {
+      next.add(provider);
+    }
+    onSelectedProvidersChanged(next);
+  }
 
-    final Widget logo = index == 0
+  Widget _buildSelectableContainer(CalendarProvider provider) {
+    final isSelected = selectedProviders.contains(provider);
+
+    final Widget logo = provider == CalendarProvider.google
         ? const _EmbeddedPngFromSvgAsset(
             svgAssetPath: 'assets/images/google.svg',
             width: 214,
             height: 50,
           )
-        : const _OutlookEmbeddedPngLogo();
+        : const _OutlookLogo();
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedIndex = index;
-        });
-      },
+      onTap: () => _toggle(provider),
       child: Container(
         width: double.infinity,
         constraints: const BoxConstraints(minHeight: 100),
@@ -229,7 +313,10 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
         ),
         child: Row(
           children: [
-            Flexible(child: logo),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: logo,
+            ),
             const Spacer(),
             if (isSelected)
               SizedBox(

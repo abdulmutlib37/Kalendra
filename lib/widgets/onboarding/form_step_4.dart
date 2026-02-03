@@ -10,11 +10,15 @@ class FormStep4 extends StatelessWidget {
     required this.onNextPressed,
     required this.onSkipPressed,
     required this.onBackPressed,
+    required this.selectedIndex,
+    required this.onSelectedIndexChanged,
   });
 
   final VoidCallback onNextPressed;
   final VoidCallback onSkipPressed;
   final VoidCallback onBackPressed;
+  final int? selectedIndex;
+  final ValueChanged<int?> onSelectedIndexChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +29,17 @@ class FormStep4 extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            OnboardingHeader(showBack: true, onBackPressed: onBackPressed),
+            OnboardingHeader(
+              showBack: true,
+              onBackPressed: onBackPressed,
+              stepLabel: '4/4',
+            ),
             Expanded(
               child: SingleChildScrollView(
-                child: OnboardingMiddleSection(),
+                child: OnboardingMiddleSection(
+                  selectedIndex: selectedIndex,
+                  onSelectedIndexChanged: onSelectedIndexChanged,
+                ),
               ),
             ),
             FormStepButtons(
@@ -43,7 +54,14 @@ class FormStep4 extends StatelessWidget {
 }
 
 class OnboardingMiddleSection extends StatefulWidget {
-  const OnboardingMiddleSection({super.key});
+  const OnboardingMiddleSection({
+    super.key,
+    required this.selectedIndex,
+    required this.onSelectedIndexChanged,
+  });
+
+  final int? selectedIndex;
+  final ValueChanged<int?> onSelectedIndexChanged;
 
   @override
   State<OnboardingMiddleSection> createState() => _OnboardingMiddleSectionState();
@@ -58,6 +76,20 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
     '3 hours',
     'No limit',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedIndex = widget.selectedIndex;
+  }
+
+  @override
+  void didUpdateWidget(covariant OnboardingMiddleSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedIndex != widget.selectedIndex) {
+      selectedIndex = widget.selectedIndex;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +151,7 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                           setState(() {
                             selectedIndex = index;
                           });
+                          widget.onSelectedIndexChanged(index);
                         },
                         child: Container(
                           width: itemWidth,
