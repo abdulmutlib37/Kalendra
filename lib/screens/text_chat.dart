@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../utils/figma_scale.dart';
+
 class TextChatScreen extends StatefulWidget {
   const TextChatScreen({super.key});
 
@@ -34,25 +36,23 @@ class _TextChatScreenState extends State<TextChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final fs = FigmaScale.of(context);
+    final screenWidth = fs.screenW;
+    final screenHeight = fs.screenH;
     final safeAreaTop = MediaQuery.of(context).padding.top;
-
-    final scaleX = screenWidth / 430;
-    final scaleY = screenHeight / 932;
 
     return Scaffold(
       body: Stack(
         children: [
           Container(
-            color: const Color(0xFF1A1A1A),
+            color: const Color(0xFF2E363C),
           ),
           Positioned(
-            right: -50 * scaleX,
-            top: -50 * scaleY,
+            right: -fs.w(50),
+            top: -fs.h(50),
             child: Container(
-              width: 300 * scaleX,
-              height: 300 * scaleY,
+              width: fs.w(300),
+              height: fs.w(300),
               decoration: BoxDecoration(
                 gradient: RadialGradient(
                   colors: [
@@ -76,8 +76,8 @@ class _TextChatScreenState extends State<TextChatScreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  const Color(0xFF2A2A2A).withValues(alpha: 0.3),
-                  const Color(0xFF1A1A1A),
+                  const Color(0xFF2E363C).withValues(alpha: 0.3),
+                  const Color(0xFF2E363C),
                 ],
               ),
             ),
@@ -85,28 +85,22 @@ class _TextChatScreenState extends State<TextChatScreen> {
           Column(
             children: [
               SizedBox(height: safeAreaTop),
-              _buildHeader(screenWidth, scaleX),
+              _buildHeader(fs),
               Expanded(
                 child: Column(
                   children: [
                     Expanded(
                       child: _isKeyboardVisible
                           ? _buildKeyboardVisibleContent(
-                              screenWidth,
-                              screenHeight,
-                              scaleX,
-                              scaleY,
+                              fs,
                             )
                           : _buildDefaultContent(
-                              screenWidth,
-                              screenHeight,
-                              scaleX,
-                              scaleY,
+                              fs,
                             ),
                     ),
                     if (!_isKeyboardVisible)
-                      _buildChatSuggestions(screenWidth, screenHeight, scaleX),
-                    _buildInputField(screenWidth, screenHeight, scaleX, scaleY),
+                      _buildChatSuggestions(fs),
+                    _buildInputField(fs),
                   ],
                 ),
               ),
@@ -117,13 +111,11 @@ class _TextChatScreenState extends State<TextChatScreen> {
     );
   }
 
-  Widget _buildHeader(double screenWidth, double scaleX) {
-    final headerHeight = 60.0 * scaleX;
-
+  Widget _buildHeader(FigmaScale fs) {
     return Container(
-      height: headerHeight,
-      width: screenWidth,
-      padding: EdgeInsets.symmetric(horizontal: 8 * scaleX),
+      height: fs.h(60),
+      width: fs.screenW,
+      padding: EdgeInsets.symmetric(horizontal: fs.w(8)),
       decoration: const BoxDecoration(
         color: Colors.transparent,
         border: Border(
@@ -138,17 +130,17 @@ class _TextChatScreenState extends State<TextChatScreen> {
           IconButton(
             icon: SvgPicture.asset(
               'assets/images/arrow.svg',
-              width: 24 * scaleX,
-              height: 24 * scaleX,
+              width: fs.w(24),
+              height: fs.w(24),
             ),
             onPressed: () => Navigator.maybePop(context),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
-          SizedBox(width: 8 * scaleX),
+          SizedBox(width: fs.w(8)),
           SvgPicture.asset(
             'assets/images/textchat.svg',
-            height: 28 * scaleX,
+            height: fs.h(28),
           ),
           const Spacer(),
           Opacity(
@@ -156,35 +148,30 @@ class _TextChatScreenState extends State<TextChatScreen> {
             child: IconButton(
               icon: SvgPicture.asset(
                 'assets/images/delete.svg',
-                width: 42 * scaleX,
-                height: 42 * scaleX,
+                width: fs.w(42),
+                height: fs.w(42),
               ),
               onPressed: () {},
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
             ),
           ),
-          SizedBox(width: 8 * scaleX),
+          SizedBox(width: fs.w(8)),
         ],
       ),
     );
   }
 
-  Widget _buildDefaultContent(
-    double screenWidth,
-    double screenHeight,
-    double scaleX,
-    double scaleY,
-  ) {
-    final ballWidth = 176.99 * scaleX;
-    final ballHeight = 124.77 * scaleY;
-    final ballLeftMargin = 127.0 * scaleX;
-    final ballTopMargin = 251.32 * scaleY;
+  Widget _buildDefaultContent(FigmaScale fs) {
+    final ballWidth = fs.w(176.99);
+    final ballHeight = fs.h(124.77);
+    final ballLeftMargin = fs.w(127.0);
+    final ballTopMargin = fs.h(251.32);
 
-    final title1Left = 122.0 * scaleX;
-    final title1Top = 397.0 * scaleY;
-    final title2Left = 114.0 * scaleX;
-    final title2Top = 426.0 * scaleY;
+    final title1Left = fs.w(122.0);
+    final title1Top = fs.h(397.0);
+    final title2Left = fs.w(114.0);
+    final title2Top = fs.h(426.0);
 
     return Stack(
       clipBehavior: Clip.none,
@@ -195,11 +182,18 @@ class _TextChatScreenState extends State<TextChatScreen> {
           child: SizedBox(
             width: ballWidth,
             height: ballHeight,
-            child: Transform.scale(
-              scale: 2.5,
-              child: SvgPicture.asset(
-                'assets/images/ball.svg',
-                fit: BoxFit.fill,
+            child: ClipRect(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: fs.w(430),
+                  height: fs.h(507),
+                  child: SvgPicture.asset(
+                    'assets/images/ball1.svg',
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
             ),
           ),
@@ -207,11 +201,11 @@ class _TextChatScreenState extends State<TextChatScreen> {
         Positioned(
           left: title1Left,
           top: title1Top,
-          child: const Text(
+          child: Text(
             'Start a conversation',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 24,
+              fontSize: fs.sp(24),
               fontWeight: FontWeight.w700,
               letterSpacing: -0.72,
               fontFamily: 'Inter',
@@ -221,11 +215,11 @@ class _TextChatScreenState extends State<TextChatScreen> {
         Positioned(
           left: title2Left,
           top: title2Top,
-          child: const Text(
+          child: Text(
             'Ask me anything about your calendar',
             style: TextStyle(
               color: Color(0xFF7B7B7B),
-              fontSize: 14,
+              fontSize: fs.sp(14),
               fontWeight: FontWeight.w500,
               letterSpacing: -0.42,
               fontFamily: 'Inter',
@@ -236,47 +230,49 @@ class _TextChatScreenState extends State<TextChatScreen> {
     );
   }
 
-  Widget _buildKeyboardVisibleContent(
-    double screenWidth,
-    double screenHeight,
-    double scaleX,
-    double scaleY,
-  ) {
-    final ballWidth = 100.0 * scaleX;
-    final ballHeight = 70.5 * scaleY;
+  Widget _buildKeyboardVisibleContent(FigmaScale fs) {
+    final ballWidth = fs.w(100.0);
+    final ballHeight = fs.h(70.5);
 
     return Container(
-      padding: EdgeInsets.only(top: 40 * scaleY),
+      padding: EdgeInsets.only(top: fs.h(40)),
       child: Column(
         children: [
           SizedBox(
             width: ballWidth,
             height: ballHeight,
-            child: Transform.scale(
-              scale: 2.0,
-              child: SvgPicture.asset(
-                'assets/images/ball.svg',
-                fit: BoxFit.fill,
+            child: ClipRect(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: fs.w(430),
+                  height: fs.h(507),
+                  child: SvgPicture.asset(
+                    'assets/images/ball1.svg',
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
             ),
           ),
-          SizedBox(height: 20 * scaleY),
-          const Text(
+          SizedBox(height: fs.h(20)),
+          Text(
             'Start a conversation',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20,
+              fontSize: fs.sp(20),
               fontWeight: FontWeight.w700,
               letterSpacing: -0.6,
               fontFamily: 'Inter',
             ),
           ),
-          SizedBox(height: 6 * scaleY),
-          const Text(
+          SizedBox(height: fs.h(6)),
+          Text(
             'Ask me anything about your calendar',
             style: TextStyle(
               color: Color(0xFF7B7B7B),
-              fontSize: 12,
+              fontSize: fs.sp(12),
               fontWeight: FontWeight.w500,
               letterSpacing: -0.36,
               fontFamily: 'Inter',
@@ -287,11 +283,7 @@ class _TextChatScreenState extends State<TextChatScreen> {
     );
   }
 
-  Widget _buildChatSuggestions(
-    double screenWidth,
-    double screenHeight,
-    double scaleX,
-  ) {
+  Widget _buildChatSuggestions(FigmaScale fs) {
     final suggestions = [
       'You have a gap at 3 PM',
       'Remind me to check progress in 2 days',
@@ -302,16 +294,16 @@ class _TextChatScreenState extends State<TextChatScreen> {
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: 16 * scaleX,
-        vertical: 12 * scaleX,
+        horizontal: fs.w(16),
+        vertical: fs.h(12),
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: suggestions.map((suggestion) {
             return Padding(
-              padding: EdgeInsets.only(right: 8 * scaleX),
-              child: _buildSuggestionChip(suggestion, scaleX),
+              padding: EdgeInsets.only(right: fs.w(8)),
+              child: _buildSuggestionChip(suggestion, fs),
             );
           }).toList(),
         ),
@@ -319,38 +311,39 @@ class _TextChatScreenState extends State<TextChatScreen> {
     );
   }
 
-  Widget _buildSuggestionChip(String text, double scaleX) {
+  Widget _buildSuggestionChip(String text, FigmaScale fs) {
     return GestureDetector(
       onTap: () {
         _textController.text = text;
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25 * scaleX),
-          gradient: const LinearGradient(
+          borderRadius: BorderRadius.circular(fs.r(25)),
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF2E363C),
-              Color(0xFFFB8624),
+              const Color(0xFF2E363C).withValues(alpha: 0.2),
+              const Color(0xFFFB8624).withValues(alpha: 0.2),
             ],
+            stops: const [0.0, 1.0],
           ),
         ),
         child: Container(
-          margin: const EdgeInsets.all(1),
+          margin: EdgeInsets.all(fs.w(1)),
           padding: EdgeInsets.symmetric(
-            horizontal: 16 * scaleX,
-            vertical: 12 * scaleX,
+            horizontal: fs.w(16),
+            vertical: fs.h(12),
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24 * scaleX),
+            borderRadius: BorderRadius.circular(fs.r(24)),
             color: const Color(0xFFFB8624).withValues(alpha: 0.2),
           ),
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               color: Color(0xFFCCCCCC),
-              fontSize: 14,
+              fontSize: fs.sp(14),
               fontWeight: FontWeight.w500,
               letterSpacing: -0.2,
             ),
@@ -360,16 +353,11 @@ class _TextChatScreenState extends State<TextChatScreen> {
     );
   }
 
-  Widget _buildInputField(
-    double screenWidth,
-    double screenHeight,
-    double scaleX,
-    double scaleY,
-  ) {
-    final inputWidth = 374.0 * scaleX;
-    final inputHeight = 50.0 * scaleY;
-    final horizontalMargin = 28.0 * scaleX;
-    final verticalMargin = 16.0 * scaleY;
+  Widget _buildInputField(FigmaScale fs) {
+    final inputWidth = fs.w(374.0);
+    final inputHeight = fs.h(50.0);
+    final horizontalMargin = fs.w(28.0);
+    final verticalMargin = fs.h(16.0);
 
     return Container(
       width: inputWidth,
@@ -379,32 +367,33 @@ class _TextChatScreenState extends State<TextChatScreen> {
         vertical: verticalMargin,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25 * scaleX),
-        gradient: const LinearGradient(
+        borderRadius: BorderRadius.circular(fs.r(25)),
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF2E363C),
-            Color(0xFFFB8624),
+            const Color(0xFF2E363C).withValues(alpha: 0.2),
+            const Color(0xFFFB8624).withValues(alpha: 0.2),
           ],
+          stops: const [0.0, 1.0],
         ),
       ),
       child: Container(
-        margin: const EdgeInsets.all(1),
+        margin: EdgeInsets.all(fs.w(1)),
         decoration: BoxDecoration(
-          color: const Color(0xFF2A2A2A),
-          borderRadius: BorderRadius.circular(24 * scaleX),
+          color: const Color(0xFFFB8624).withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(fs.r(24)),
         ),
-        padding: EdgeInsets.symmetric(horizontal: 20 * scaleX),
+        padding: EdgeInsets.symmetric(horizontal: fs.w(20)),
         child: Row(
           children: [
             Expanded(
               child: TextField(
                 controller: _textController,
                 focusNode: _focusNode,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: fs.sp(16),
                 ),
                 decoration: const InputDecoration(
                   hintText: 'Tap to chat...',
@@ -418,11 +407,11 @@ class _TextChatScreenState extends State<TextChatScreen> {
                 ),
               ),
             ),
-            SizedBox(width: 12 * scaleX),
+            SizedBox(width: fs.w(12)),
             SvgPicture.asset(
               'assets/images/gchat.svg',
-              width: 24 * scaleX,
-              height: 24 * scaleX,
+              width: fs.w(24),
+              height: fs.w(24),
             ),
           ],
         ),
