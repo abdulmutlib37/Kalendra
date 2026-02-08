@@ -4,6 +4,9 @@ import 'package:intl/intl.dart';
 
 import '../routes/app_routes.dart';
 import '../utils/figma_scale.dart';
+import 'home/home_action_card.dart';
+import 'home/home_bottom_navigation_bar.dart';
+import 'home/home_filter_chip.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -362,13 +365,13 @@ class HomeScreen extends StatelessWidget {
                             horizontal: horizontalPadding,
                           ),
                           children: [
-                            _buildFilterChip(context, 'Teams', onPressed: () {}),
+                            HomeFilterChip(label: 'Teams', onPressed: () {}),
                             SizedBox(width: fs.w(12)),
-                            _buildFilterChip(context, 'Urgent', onPressed: () {}),
+                            HomeFilterChip(label: 'Urgent', onPressed: () {}),
                             SizedBox(width: fs.w(12)),
-                            _buildFilterChip(context, 'Upcoming', onPressed: () {}),
+                            HomeFilterChip(label: 'Upcoming', onPressed: () {}),
                             SizedBox(width: fs.w(12)),
-                            _buildFilterChip(context, 'Completed', onPressed: () {}),
+                            HomeFilterChip(label: 'Completed', onPressed: () {}),
                           ],
                         ),
                       ),
@@ -381,8 +384,7 @@ class HomeScreen extends StatelessWidget {
                             horizontal: horizontalPadding,
                           ),
                           children: [
-                            _buildActionCard(
-                              context: context,
+                            HomeActionCard(
                               width: taskCardWidth,
                               height: taskCardHeight,
                               iconSize: taskIconSize,
@@ -396,8 +398,7 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () {},
                             ),
                             SizedBox(width: fs.w(16)),
-                            _buildActionCard(
-                              context: context,
+                            HomeActionCard(
                               width: taskCardWidth,
                               height: taskCardHeight,
                               iconSize: taskIconSize,
@@ -411,8 +412,7 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () {},
                             ),
                             SizedBox(width: fs.w(16)),
-                            _buildActionCard(
-                              context: context,
+                            HomeActionCard(
                               width: taskCardWidth,
                               height: taskCardHeight,
                               iconSize: taskIconSize,
@@ -433,8 +433,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              _buildBottomNavigationBar(
-                context: context,
+              HomeBottomNavigationBar(
                 width: bottomNavWidth,
                 height: bottomNavHeight,
                 calendarSize: calendarIconSize,
@@ -455,204 +454,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterChip(
-    BuildContext context,
-    String label, {
-    required VoidCallback onPressed,
-  }) {
-    final fs = FigmaScale.of(context);
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: fs.w(24),
-          vertical: fs.h(10),
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(fs.r(12)),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.3),
-            width: 1,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: fs.sp(15),
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-              height: 1.0,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionCard({
-    required BuildContext context,
-    required double width,
-    required double height,
-    required double iconSize,
-    required double titleWidth,
-    required double titleHeight,
-    required double subtitleWidth,
-    required double subtitleHeight,
-    required String iconAsset,
-    required String title,
-    required String subtitle,
-    required VoidCallback onPressed,
-  }) {
-    final fs = FigmaScale.of(context);
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: width,
-        height: height,
-        padding: EdgeInsets.all(fs.w(16)),
-        decoration: BoxDecoration(
-          color: const Color(0xFF4A5661),
-          borderRadius: BorderRadius.circular(fs.r(16)),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.1),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SvgPicture.asset(
-              'assets/images/$iconAsset',
-              width: iconSize,
-              height: iconSize,
-              fit: BoxFit.contain,
-            ),
-            const Spacer(),
-            SizedBox(
-              width: titleWidth,
-              height: titleHeight,
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: fs.sp(16),
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  height: 1.0,
-                ),
-              ),
-            ),
-            SizedBox(height: fs.h(4)),
-            SizedBox(
-              width: subtitleWidth,
-              height: subtitleHeight,
-              child: Text(
-                subtitle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: fs.sp(12),
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white.withValues(alpha: 0.7),
-                  height: 1.0,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavigationBar({
-    required BuildContext context,
-    required double width,
-    required double height,
-    required double calendarSize,
-    required double voiceSize,
-    required double chatSize,
-    required VoidCallback onCalendarPressed,
-    required VoidCallback onVoicePressed,
-    required VoidCallback onChatPressed,
-  }) {
-    final fs = FigmaScale.of(context);
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: fs.h(20),
-        left: (fs.screenW - width) / 2,
-        right: (fs.screenW - width) / 2,
-      ),
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: const Color(0xFF4A5661),
-          borderRadius: BorderRadius.circular(fs.r(50)),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.2),
-            width: 1,
-          ),
-          gradient: LinearGradient(
-            colors: [
-              Colors.white.withValues(alpha: 0.15),
-              Colors.white.withValues(alpha: 0.0),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            GestureDetector(
-              onTap: onCalendarPressed,
-              child: SvgPicture.asset(
-                'assets/images/calendardots.svg',
-                width: calendarSize,
-                height: calendarSize,
-                fit: BoxFit.contain,
-              ),
-            ),
-            GestureDetector(
-              onTap: onVoicePressed,
-              child: Container(
-                width: voiceSize,
-                height: voiceSize,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFB8624),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/images/voice.svg',
-                    width: voiceSize * 0.5,
-                    height: voiceSize * 0.5,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: onChatPressed,
-              child: SvgPicture.asset(
-                'assets/images/chat.svg',
-                width: chatSize,
-                height: chatSize,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ],
         ),
       ),
     );

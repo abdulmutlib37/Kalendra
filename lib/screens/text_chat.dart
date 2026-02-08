@@ -476,8 +476,6 @@ class _TextChatScreenState extends State<TextChatScreen>
   }
 
   Widget _buildDefaultContent(FigmaScale fs) {
-    final ballWidth = fs.w(176.99);
-    final ballHeight = fs.h(124.77);
     final ballLeftMargin = fs.w(127.0);
     final ballTopMargin = fs.h(251.32);
 
@@ -492,24 +490,7 @@ class _TextChatScreenState extends State<TextChatScreen>
         Positioned(
           left: ballLeftMargin,
           top: ballTopMargin,
-          child: SizedBox(
-            width: ballWidth,
-            height: ballHeight,
-            child: ClipRect(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: fs.w(430),
-                  height: fs.h(507),
-                  child: SvgPicture.asset(
-                    'assets/images/ball1.svg',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          child: _buildComplexBall(fs),
         ),
         Positioned(
           left: title1Left,
@@ -543,32 +524,141 @@ class _TextChatScreenState extends State<TextChatScreen>
     );
   }
 
-  Widget _buildKeyboardVisibleContent(FigmaScale fs) {
-    final ballWidth = fs.w(100.0);
-    final ballHeight = fs.h(70.5);
-
-    return Container(
-      padding: EdgeInsets.only(top: fs.h(40)),
-      child: Column(
+  Widget _buildComplexBall(FigmaScale fs) {
+    return SizedBox(
+      width: fs.w(176.99),
+      height: fs.h(124.77),
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          SizedBox(
-            width: ballWidth,
-            height: ballHeight,
-            child: ClipRect(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: fs.w(430),
-                  height: fs.h(507),
-                  child: SvgPicture.asset(
-                    'assets/images/ball1.svg',
-                    fit: BoxFit.contain,
-                  ),
-                ),
+          Positioned(
+            left: fs.w(0),
+            top: fs.h(0),
+            child: SvgPicture.asset(
+              'assets/images/layer4.svg',
+              width: fs.w(176.99),
+              height: fs.h(107.29),
+            ),
+          ),
+          Positioned(
+            left: fs.w(98.58),
+            top: fs.h(0),
+            child: SvgPicture.asset(
+              'assets/images/ellipse61.svg',
+              width: fs.w(78.41),
+              height: fs.h(78.41),
+            ),
+          ),
+          Positioned(
+            left: fs.w(0),
+            top: fs.h(28.88),
+            child: SvgPicture.asset(
+              'assets/images/ellipse62.svg',
+              width: fs.w(78.41),
+              height: fs.h(78.41),
+            ),
+          ),
+          Positioned(
+            left: fs.w(27),
+            top: fs.h(2.75),
+            child: SvgPicture.asset(
+              'assets/images/layer22.svg',
+              width: fs.w(122.02),
+              height: fs.h(122.02),
+            ),
+          ),
+          Positioned(
+            left: fs.w(27),
+            top: fs.h(2.75),
+            child: Transform.rotate(
+              angle: -90 * 3.14159 / 180,
+              child: SvgPicture.asset(
+                'assets/images/layer3.svg',
+                width: fs.w(122.02),
+                height: fs.h(122.02),
               ),
             ),
           ),
+          Positioned(
+            left: fs.w(27),
+            top: fs.h(3.71),
+            child: SvgPicture.asset(
+              'assets/images/gif.svg',
+              width: fs.w(119.93),
+              height: fs.h(119.93),
+            ),
+          ),
+          Positioned(
+            left: fs.w(27),
+            top: fs.h(2.75),
+            child: Transform.rotate(
+              angle: -90 * 3.14159 / 180,
+              child: SvgPicture.asset(
+                'assets/images/ellipse10.svg',
+                width: fs.w(122.02),
+                height: fs.h(122.02),
+              ),
+            ),
+          ),
+          Positioned(
+            left: fs.w(27),
+            top: fs.h(2.75),
+            child: Transform.rotate(
+              angle: -90 * 3.14159 / 180,
+              child: SvgPicture.asset(
+                'assets/images/ellipse1.svg',
+                width: fs.w(122.02),
+                height: fs.h(122.02),
+              ),
+            ),
+          ),
+          Positioned(
+            left: fs.w(0),
+            top: fs.h(0),
+            child: SvgPicture.asset(
+              'assets/images/layer1.svg',
+              width: fs.w(176.99),
+              height: fs.h(124.77),
+            ),
+          ),
+          Positioned(
+            left: fs.w(0),
+            top: fs.h(0),
+            child: SvgPicture.asset(
+              'assets/images/layer2.svg',
+              width: fs.w(176.99),
+              height: fs.h(124.77),
+            ),
+          ),
+          Positioned(
+            left: fs.w(67),
+            top: fs.h(40.68),
+            child: SvgPicture.asset(
+              'assets/images/chats.svg',
+              width: fs.w(42),
+              height: fs.h(42),
+            ),
+          ),
+          Positioned(
+            left: fs.w(70.94),
+            top: fs.h(45.93),
+            child: SvgPicture.asset(
+              'assets/images/vector.svg',
+              width: fs.w(34.13),
+              height: fs.h(32.81),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildKeyboardVisibleContent(FigmaScale fs) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildComplexBall(fs),
           SizedBox(height: fs.h(20)),
           Text(
             'Start a conversation',
