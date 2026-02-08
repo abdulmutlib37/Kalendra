@@ -26,25 +26,34 @@ class HomeScreen extends StatelessWidget {
         '${dateFormatter.format(now)}$suffix ${DateFormat('MMM yyyy').format(now)}';
 
     final horizontalPadding = fs.w(20);
-    final availableW = fs.screenW;
 
-    final viewAllWidth = fs.w(110).clamp(fs.w(88), fs.w(120)).toDouble();
-    final viewAllHeight = fs.h(44).clamp(fs.h(34), fs.h(48)).toDouble();
+    final viewAllWidth = fs.w(90);
+    final viewAllHeight = fs.h(30);
 
-    final eventCardWidth = fs
-        .u(360)
-        .clamp(
-          fs.u(260),
-          (availableW - (horizontalPadding * 2)).clamp(0.0, double.infinity),
-        )
-        .toDouble();
-    final actionCardWidth = fs
-        .u(340)
-        .clamp(
-          fs.u(220),
-          (availableW - (horizontalPadding * 2)).clamp(0.0, double.infinity),
-        )
-        .toDouble();
+    final eventCardWidth = fs.w(190.84);
+    final eventCardHeight = fs.h(199.43);
+    final eventCardSpacing = fs.w(200.39 - 190.84);
+
+    final eventIconSize = fs.w(30.53);
+    final eventTitleWidth = fs.w(160.31);
+    final eventDateWidth = fs.w(160.31);
+    final eventDateHeight = fs.h(14);
+    final viewDetailsWidth = fs.w(160.31);
+    final viewDetailsHeight = fs.h(31.49);
+
+    final taskCardWidth = fs.w(166);
+    final taskCardHeight = fs.h(145);
+    final taskIconSize = fs.w(50);
+    final taskTitleWidth = fs.w(134);
+    final taskTitleHeight = fs.h(22);
+    final taskSubtitleWidth = fs.w(134);
+    final taskSubtitleHeight = fs.h(15);
+
+    final bottomNavWidth = fs.w(240);
+    final bottomNavHeight = fs.h(66);
+    final calendarIconSize = fs.w(28.8);
+    final voiceIconSize = fs.w(46);
+    final chatIconSize = fs.w(28.8);
 
     return Scaffold(
       backgroundColor: const Color(0xFF2E363C),
@@ -65,9 +74,10 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Padding(
                         padding: EdgeInsets.fromLTRB(
                           horizontalPadding,
@@ -93,12 +103,25 @@ class HomeScreen extends StatelessWidget {
                               ),
                               child: SvgPicture.asset(
                                 'assets/images/settings.svg',
-                                width: fs.u(40),
-                                height: fs.u(40),
+                                width: fs.w(40),
+                                height: fs.h(40),
                                 fit: BoxFit.contain,
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                      SizedBox(height: fs.h(8)),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: fs.w(20)),
+                        child: Text(
+                          'What can i do for you today?',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: fs.sp(16),
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white.withValues(alpha: 0.7),
+                          ),
                         ),
                       ),
                       SizedBox(height: fs.h(20)),
@@ -185,7 +208,6 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.white,
                               ),
                             ),
-                            SizedBox(width: fs.w(20)),
                             GestureDetector(
                               onTap: () {},
                               child: SvgPicture.asset(
@@ -200,7 +222,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       SizedBox(height: fs.h(16)),
                       SizedBox(
-                        height: fs.h(210),
+                        height: eventCardHeight,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           padding: EdgeInsets.only(
@@ -223,8 +245,9 @@ class HomeScreen extends StatelessWidget {
                             ];
                             return Container(
                               width: eventCardWidth,
-                              margin: EdgeInsets.only(right: fs.w(16)),
-                              padding: EdgeInsets.all(fs.w(20)),
+                              height: eventCardHeight,
+                              margin: EdgeInsets.only(right: eventCardSpacing),
+                              padding: EdgeInsets.all(fs.w(15)),
                               decoration: BoxDecoration(
                                 color: const Color(0xFF4A5661),
                                 borderRadius: BorderRadius.circular(fs.r(16)),
@@ -238,30 +261,37 @@ class HomeScreen extends StatelessWidget {
                                 children: [
                                   SvgPicture.asset(
                                     'assets/images/calendar.svg',
-                                    width: fs.u(36),
-                                    height: fs.u(36),
+                                    width: eventIconSize,
+                                    height: eventIconSize,
                                     fit: BoxFit.contain,
                                   ),
-                                  SizedBox(height: fs.h(14)),
-                                  Text(
-                                    titles[index],
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: fs.sp(18),
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                      height: 1.3,
+                                  SizedBox(height: fs.h(10)),
+                                  SizedBox(
+                                    width: eventTitleWidth,
+                                    child: Text(
+                                      titles[index],
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: fs.sp(16),
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        height: 1.2,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(height: fs.h(8)),
-                                  Text(
-                                    dates[index],
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: fs.sp(12),
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white.withValues(
-                                        alpha: 0.6,
+                                  SizedBox(
+                                    width: eventDateWidth,
+                                    height: eventDateHeight,
+                                    child: Text(
+                                      dates[index],
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: fs.sp(11),
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.6,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -269,21 +299,19 @@ class HomeScreen extends StatelessWidget {
                                   GestureDetector(
                                     onTap: () {},
                                     child: Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: fs.h(12),
-                                      ),
+                                      width: viewDetailsWidth,
+                                      height: viewDetailsHeight,
                                       decoration: BoxDecoration(
                                         color: const Color(0xFFFB8624),
                                         borderRadius:
-                                            BorderRadius.circular(fs.r(12)),
+                                            BorderRadius.circular(fs.r(8)),
                                       ),
                                       child: Center(
                                         child: Text(
                                           'View details',
                                           style: TextStyle(
                                             fontFamily: 'Inter',
-                                            fontSize: fs.sp(14),
+                                            fontSize: fs.sp(13),
                                             fontWeight: FontWeight.w700,
                                             color: Colors.white,
                                           ),
@@ -313,7 +341,6 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.white,
                               ),
                             ),
-                            SizedBox(width: fs.w(20)),
                             GestureDetector(
                               onTap: () {},
                               child: SvgPicture.asset(
@@ -328,7 +355,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       SizedBox(height: fs.h(16)),
                       SizedBox(
-                        height: fs.h(48),
+                        height: fs.h(42),
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           padding: EdgeInsets.symmetric(
@@ -347,7 +374,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       SizedBox(height: fs.h(20)),
                       SizedBox(
-                        height: fs.h(145),
+                        height: taskCardHeight,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           padding: EdgeInsets.symmetric(
@@ -356,7 +383,13 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             _buildActionCard(
                               context: context,
-                              width: actionCardWidth,
+                              width: taskCardWidth,
+                              height: taskCardHeight,
+                              iconSize: taskIconSize,
+                              titleWidth: taskTitleWidth,
+                              titleHeight: taskTitleHeight,
+                              subtitleWidth: taskSubtitleWidth,
+                              subtitleHeight: taskSubtitleHeight,
                               iconAsset: 'plus.svg',
                               title: 'Add Task',
                               subtitle: 'Added task shows here',
@@ -365,7 +398,13 @@ class HomeScreen extends StatelessWidget {
                             SizedBox(width: fs.w(16)),
                             _buildActionCard(
                               context: context,
-                              width: actionCardWidth,
+                              width: taskCardWidth,
+                              height: taskCardHeight,
+                              iconSize: taskIconSize,
+                              titleWidth: taskTitleWidth,
+                              titleHeight: taskTitleHeight,
+                              subtitleWidth: taskSubtitleWidth,
+                              subtitleHeight: taskSubtitleHeight,
                               iconAsset: 'list.svg',
                               title: 'Complete',
                               subtitle: 'Sprint 1 tasks',
@@ -374,7 +413,13 @@ class HomeScreen extends StatelessWidget {
                             SizedBox(width: fs.w(16)),
                             _buildActionCard(
                               context: context,
-                              width: actionCardWidth,
+                              width: taskCardWidth,
+                              height: taskCardHeight,
+                              iconSize: taskIconSize,
+                              titleWidth: taskTitleWidth,
+                              titleHeight: taskTitleHeight,
+                              subtitleWidth: taskSubtitleWidth,
+                              subtitleHeight: taskSubtitleHeight,
                               iconAsset: 'list.svg',
                               title: 'Complete',
                               subtitle: 'Sprint 2 tasks',
@@ -384,12 +429,17 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: fs.h(20)),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               _buildBottomNavigationBar(
                 context: context,
-                horizontalPadding: horizontalPadding,
+                width: bottomNavWidth,
+                height: bottomNavHeight,
+                calendarSize: calendarIconSize,
+                voiceSize: voiceIconSize,
+                chatSize: chatIconSize,
                 onCalendarPressed: () => Navigator.pushNamed(
                   context,
                   AppRoutes.unifiedCalendar,
@@ -420,8 +470,8 @@ class HomeScreen extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: fs.w(28),
-          vertical: fs.h(14),
+          horizontal: fs.w(24),
+          vertical: fs.h(10),
         ),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.15),
@@ -436,9 +486,10 @@ class HomeScreen extends StatelessWidget {
             label,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: fs.sp(17),
+              fontSize: fs.sp(15),
               fontWeight: FontWeight.w500,
               color: Colors.white,
+              height: 1.0,
             ),
           ),
         ),
@@ -449,6 +500,12 @@ class HomeScreen extends StatelessWidget {
   Widget _buildActionCard({
     required BuildContext context,
     required double width,
+    required double height,
+    required double iconSize,
+    required double titleWidth,
+    required double titleHeight,
+    required double subtitleWidth,
+    required double subtitleHeight,
     required String iconAsset,
     required String title,
     required String subtitle,
@@ -459,7 +516,8 @@ class HomeScreen extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: width,
-        padding: EdgeInsets.all(fs.w(12)),
+        height: height,
+        padding: EdgeInsets.all(fs.w(16)),
         decoration: BoxDecoration(
           color: const Color(0xFF4A5661),
           borderRadius: BorderRadius.circular(fs.r(16)),
@@ -473,43 +531,41 @@ class HomeScreen extends StatelessWidget {
           children: [
             SvgPicture.asset(
               'assets/images/$iconAsset',
-              width: fs.u(40),
-              height: fs.u(40),
+              width: iconSize,
+              height: iconSize,
               fit: BoxFit.contain,
             ),
-            SizedBox(height: fs.h(6)),
-            Flexible(
-              fit: FlexFit.loose,
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: fs.sp(15),
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: fs.h(2)),
-                    Text(
-                      subtitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: fs.sp(11),
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ],
+            const Spacer(),
+            SizedBox(
+              width: titleWidth,
+              height: titleHeight,
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: fs.sp(16),
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  height: 1.0,
+                ),
+              ),
+            ),
+            SizedBox(height: fs.h(4)),
+            SizedBox(
+              width: subtitleWidth,
+              height: subtitleHeight,
+              child: Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: fs.sp(12),
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white.withValues(alpha: 0.7),
+                  height: 1.0,
                 ),
               ),
             ),
@@ -521,7 +577,11 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildBottomNavigationBar({
     required BuildContext context,
-    required double horizontalPadding,
+    required double width,
+    required double height,
+    required double calendarSize,
+    required double voiceSize,
+    required double chatSize,
     required VoidCallback onCalendarPressed,
     required VoidCallback onVoicePressed,
     required VoidCallback onChatPressed,
@@ -530,17 +590,22 @@ class HomeScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
         bottom: fs.h(20),
-        left: fs.w(40),
-        right: fs.w(40),
+        left: (fs.screenW - width) / 2,
+        right: (fs.screenW - width) / 2,
       ),
       child: Container(
-        height: fs.h(72),
+        width: width,
+        height: height,
         decoration: BoxDecoration(
           color: const Color(0xFF4A5661),
           borderRadius: BorderRadius.circular(fs.r(50)),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
           gradient: LinearGradient(
             colors: [
-              Colors.white.withValues(alpha: 0.2),
+              Colors.white.withValues(alpha: 0.15),
               Colors.white.withValues(alpha: 0.0),
             ],
             begin: Alignment.topLeft,
@@ -554,16 +619,16 @@ class HomeScreen extends StatelessWidget {
               onTap: onCalendarPressed,
               child: SvgPicture.asset(
                 'assets/images/calendardots.svg',
-                width: fs.u(24),
-                height: fs.u(24),
+                width: calendarSize,
+                height: calendarSize,
                 fit: BoxFit.contain,
               ),
             ),
             GestureDetector(
               onTap: onVoicePressed,
               child: Container(
-                width: fs.u(52),
-                height: fs.u(52),
+                width: voiceSize,
+                height: voiceSize,
                 decoration: const BoxDecoration(
                   color: Color(0xFFFB8624),
                   shape: BoxShape.circle,
@@ -571,8 +636,8 @@ class HomeScreen extends StatelessWidget {
                 child: Center(
                   child: SvgPicture.asset(
                     'assets/images/voice.svg',
-                    width: fs.u(24),
-                    height: fs.u(24),
+                    width: voiceSize * 0.5,
+                    height: voiceSize * 0.5,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -582,8 +647,8 @@ class HomeScreen extends StatelessWidget {
               onTap: onChatPressed,
               child: SvgPicture.asset(
                 'assets/images/chat.svg',
-                width: fs.u(24),
-                height: fs.u(24),
+                width: chatSize,
+                height: chatSize,
                 fit: BoxFit.contain,
               ),
             ),

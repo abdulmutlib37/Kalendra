@@ -130,7 +130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         icon: Icons.palette_outlined,
                         title: 'Connected Calendar Color',
                         onTap: () {
-                          _showCalendarColorModal(context);
+                          // Will add popup later as per user request
                         },
                       ),
                       _buildDivider(),
@@ -376,10 +376,12 @@ class _DefaultCalendarDialogState extends State<_DefaultCalendarDialog> {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: fs.w(44)),
+      insetPadding: EdgeInsets.symmetric(horizontal: fs.w(16)),
       child: Container(
         width: fs.w(343),
-        height: fs.h(304),
+        constraints: BoxConstraints(
+          maxWidth: fs.w(343),
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(fs.r(20)),
@@ -388,62 +390,74 @@ class _DefaultCalendarDialogState extends State<_DefaultCalendarDialog> {
             width: 1,
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(fs.w(24)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Default Calendar',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: fs.sp(24),
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Inter',
+        child: IntrinsicHeight(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(fs.w(24)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: fs.w(263),
+                      child: Text(
+                        'Default Calendar',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: fs.sp(20),
+                          fontWeight: FontWeight.w800,
+                          fontFamily: 'Inter',
+                          height: 1.2,
+                        ),
+                      ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(
-                      Icons.close,
-                      size: fs.w(28),
-                      color: Colors.red,
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: SizedBox(
+                        width: fs.w(24),
+                        height: fs.w(24),
+                        child: Icon(
+                          Icons.close,
+                          size: fs.w(24),
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: fs.w(16)),
-              child: _buildCalendarOption(
-                name: 'Outlook',
-                iconPath: 'assets/images/outlook.png',
-                accountType: 'Work',
-                isSelected: selectedCalendar == 'outlook',
-                onTap: () {
-                  setState(() => selectedCalendar = 'outlook');
-                  _saveSelectedCalendar('outlook');
-                },
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
+                child: _buildCalendarOption(
+                  name: 'Outlook',
+                  logoPath: 'assets/images/ologo.svg',
+                  textPath: 'assets/images/Outlookk.svg',
+                  isSelected: selectedCalendar == 'outlook',
+                  onTap: () {
+                    setState(() => selectedCalendar = 'outlook');
+                    _saveSelectedCalendar('outlook');
+                  },
+                ),
               ),
-            ),
-            SizedBox(height: fs.h(16)),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: fs.w(16)),
-              child: _buildCalendarOption(
-                name: 'Google',
-                iconPath: 'assets/images/google_calendar.png',
-                accountType: 'Personal',
-                isSelected: selectedCalendar == 'google',
-                onTap: () {
-                  setState(() => selectedCalendar = 'google');
-                  _saveSelectedCalendar('google');
-                },
+              SizedBox(height: fs.h(16)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
+                child: _buildCalendarOption(
+                  name: 'Google',
+                  logoPath: 'assets/images/ggoogle.svg',
+                  textPath: null,
+                  isSelected: selectedCalendar == 'google',
+                  onTap: () {
+                    setState(() => selectedCalendar = 'google');
+                    _saveSelectedCalendar('google');
+                  },
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: fs.h(24)),
+            ],
+          ),
         ),
       ),
     );
@@ -451,8 +465,8 @@ class _DefaultCalendarDialogState extends State<_DefaultCalendarDialog> {
 
   Widget _buildCalendarOption({
     required String name,
-    required String iconPath,
-    required String accountType,
+    required String logoPath,
+    String? textPath,
     required bool isSelected,
     required VoidCallback onTap,
   }) {
@@ -460,6 +474,10 @@ class _DefaultCalendarDialogState extends State<_DefaultCalendarDialog> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        width: fs.w(295),
+        constraints: BoxConstraints(
+          maxWidth: fs.w(295),
+        ),
         padding: EdgeInsets.all(fs.w(16)),
         decoration: BoxDecoration(
           color: Colors.black.withOpacity(0.05),
@@ -472,6 +490,7 @@ class _DefaultCalendarDialogState extends State<_DefaultCalendarDialog> {
           ),
         ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: fs.w(24),
@@ -495,77 +514,29 @@ class _DefaultCalendarDialogState extends State<_DefaultCalendarDialog> {
                   : null,
             ),
             SizedBox(width: fs.w(16)),
-            Image.asset(
-              iconPath,
-              width: fs.w(40),
-              height: fs.w(40),
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: fs.w(40),
-                  height: fs.w(40),
-                  decoration: BoxDecoration(
-                    color: name == 'Outlook'
-                        ? const Color(0xFF0078D4)
-                        : const Color(0xFF4285F4),
-                    borderRadius: BorderRadius.circular(fs.r(8)),
-                  ),
-                  child: Icon(
-                    Icons.calendar_today,
-                    color: Colors.white,
-                    size: fs.w(24),
-                  ),
-                );
-              },
-            ),
-            SizedBox(width: fs.w(16)),
-            Expanded(
-              child: Text(
-                name,
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: fs.sp(18),
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Inter',
-                ),
-              ),
-            ),
-            Icon(
-              Icons.link,
-              color: const Color(0xFF00CA48),
-              size: fs.w(20),
-            ),
-            SizedBox(width: fs.w(8)),
             Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: fs.w(12),
-                vertical: fs.h(6),
-              ),
+              width: fs.w(32),
+              height: fs.w(32),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.05),
+                color: name == 'Outlook'
+                    ? const Color(0xFF0078D4)
+                    : const Color(0xFF4285F4),
                 borderRadius: BorderRadius.circular(fs.r(8)),
-                border: Border.all(
-                  color: Colors.black.withOpacity(0.12),
-                ),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    accountType,
-                    style: TextStyle(
-                      color: Colors.red.withOpacity(0.85),
-                      fontSize: fs.sp(14),
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                  SizedBox(width: fs.w(4)),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    size: fs.w(16),
-                    color: Colors.red.withOpacity(0.8),
-                  ),
-                ],
+              child: Icon(
+                Icons.calendar_today,
+                color: Colors.white,
+                size: fs.w(18),
+              ),
+            ),
+            SizedBox(width: fs.w(12)),
+            Text(
+              name,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: fs.sp(16),
+                fontWeight: FontWeight.w700,
+                fontFamily: 'Inter',
               ),
             ),
           ],
@@ -892,10 +863,12 @@ class _WorkingHoursDialogState extends State<_WorkingHoursDialog> {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: fs.w(44)),
+      insetPadding: EdgeInsets.symmetric(horizontal: fs.w(16)),
       child: Container(
         width: fs.w(343),
-        height: fs.h(357),
+        constraints: BoxConstraints(
+          maxWidth: fs.w(343),
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(fs.r(20)),
@@ -904,210 +877,226 @@ class _WorkingHoursDialogState extends State<_WorkingHoursDialog> {
             width: 1,
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(fs.w(24)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Working Hours',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: fs.sp(24),
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(
-                      Icons.close,
-                      size: fs.w(28),
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Start',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: fs.sp(16),
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                  SizedBox(height: fs.h(8)),
-                  GestureDetector(
-                    onTap: () => _selectTime(true),
-                    child: Container(
-                      width: double.infinity,
-                      height: fs.h(50),
-                      padding: EdgeInsets.symmetric(horizontal: fs.w(16)),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(fs.r(12)),
-                        border: Border.all(
-                          color: Colors.black.withOpacity(0.12),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _formatTime(startTime),
-                            style: TextStyle(
-                              color: startTime == null
-                                  ? Colors.red.withOpacity(0.55)
-                                  : Colors.red,
-                              fontSize: fs.sp(16),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.red.withOpacity(0.6),
-                            size: fs.w(24),
-                          ),
-                        ],
+        child: IntrinsicHeight(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(fs.w(24)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Working Hours',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: fs.sp(20),
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Inter',
+                        height: 1.2,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: fs.h(24)),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'End',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: fs.sp(16),
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                  SizedBox(height: fs.h(8)),
-                  GestureDetector(
-                    onTap: () => _selectTime(false),
-                    child: Container(
-                      width: double.infinity,
-                      height: fs.h(50),
-                      padding: EdgeInsets.symmetric(horizontal: fs.w(16)),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(fs.r(12)),
-                        border: Border.all(
-                          color: Colors.black.withOpacity(0.12),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _formatTime(endTime),
-                            style: TextStyle(
-                              color: endTime == null
-                                  ? Colors.red.withOpacity(0.55)
-                                  : Colors.red,
-                              fontSize: fs.sp(16),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.red.withOpacity(0.6),
-                            size: fs.w(24),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: EdgeInsets.all(fs.w(24)),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
+                    GestureDetector(
                       onTap: () => Navigator.pop(context),
+                      child: SizedBox(
+                        width: fs.w(24),
+                        height: fs.w(24),
+                        child: Icon(
+                          Icons.close,
+                          size: fs.w(24),
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Start',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: fs.sp(14),
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    SizedBox(height: fs.h(8)),
+                    GestureDetector(
+                      onTap: () => _selectTime(true),
                       child: Container(
-                        height: fs.h(50),
+                        width: fs.w(295),
+                        constraints: BoxConstraints(
+                          maxWidth: fs.w(295),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: fs.w(16),
+                          vertical: fs.h(16),
+                        ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Colors.black.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(fs.r(12)),
                           border: Border.all(
-                            color: Colors.red.withOpacity(0.35),
+                            color: Colors.black.withOpacity(0.12),
                             width: 1,
                           ),
                         ),
-                        child: Center(
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: fs.sp(16),
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Inter',
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _formatTime(startTime),
+                              style: TextStyle(
+                                color: startTime == null
+                                    ? Colors.black.withOpacity(0.55)
+                                    : Colors.black,
+                                fontSize: fs.sp(16),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Inter',
+                              ),
                             ),
-                          ),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black.withOpacity(0.6),
+                              size: fs.w(24),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: fs.w(16)),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () async {
-                        await _saveTimes();
-                        if (mounted) {
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Container(
-                        height: fs.h(50),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(fs.r(12)),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Continue',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: fs.sp(16),
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: fs.h(16)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'End',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: fs.sp(14),
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    SizedBox(height: fs.h(8)),
+                    GestureDetector(
+                      onTap: () => _selectTime(false),
+                      child: Container(
+                        width: fs.w(295),
+                        constraints: BoxConstraints(
+                          maxWidth: fs.w(295),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: fs.w(16),
+                          vertical: fs.h(16),
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(fs.r(12)),
+                          border: Border.all(
+                            color: Colors.black.withOpacity(0.12),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _formatTime(endTime),
+                              style: TextStyle(
+                                color: endTime == null
+                                    ? Colors.black.withOpacity(0.55)
+                                    : Colors.black,
+                                fontSize: fs.sp(16),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black.withOpacity(0.6),
+                              size: fs.w(24),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: fs.h(24)),
+              Padding(
+                padding: EdgeInsets.all(fs.w(24)),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: fs.h(16)),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF2F2F2),
+                            borderRadius: BorderRadius.circular(fs.r(12)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                color: const Color(0xFFFB8624),
+                                fontSize: fs.sp(15),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: fs.w(10)),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          await _saveTimes();
+                          if (mounted) {
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: fs.h(16)),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFB8624),
+                            borderRadius: BorderRadius.circular(fs.r(12)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Continue',
+                              style: TextStyle(
+                                color: const Color(0xFFFFFFFF),
+                                fontSize: fs.sp(15),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1208,10 +1197,12 @@ class _PersonalWorkingHoursDialogState extends State<_PersonalWorkingHoursDialog
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: fs.w(44)),
+      insetPadding: EdgeInsets.symmetric(horizontal: fs.w(16)),
       child: Container(
         width: fs.w(343),
-        height: fs.h(357),
+        constraints: BoxConstraints(
+          maxWidth: fs.w(343),
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(fs.r(20)),
@@ -1220,213 +1211,229 @@ class _PersonalWorkingHoursDialogState extends State<_PersonalWorkingHoursDialog
             width: 1,
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(fs.w(24)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Personal Working Hours',
+        child: IntrinsicHeight(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(fs.w(24)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Personal Working Hours',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: fs.sp(20),
+                          fontWeight: FontWeight.w800,
+                          fontFamily: 'Inter',
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: fs.w(8)),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: SizedBox(
+                        width: fs.w(24),
+                        height: fs.w(24),
+                        child: Icon(
+                          Icons.close,
+                          size: fs.w(24),
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Start',
                       style: TextStyle(
-                        color: Colors.red,
-                        fontSize: fs.sp(22),
+                        color: Colors.black,
+                        fontSize: fs.sp(14),
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',
                       ),
                     ),
-                  ),
-                  SizedBox(width: fs.w(8)),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(
-                      Icons.close,
-                      size: fs.w(28),
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Start',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: fs.sp(16),
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                  SizedBox(height: fs.h(8)),
-                  GestureDetector(
-                    onTap: () => _selectTime(true),
-                    child: Container(
-                      width: double.infinity,
-                      height: fs.h(50),
-                      padding: EdgeInsets.symmetric(horizontal: fs.w(16)),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(fs.r(12)),
-                        border: Border.all(
-                          color: Colors.black.withOpacity(0.12),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _formatTime(startTime),
-                            style: TextStyle(
-                              color: startTime == null
-                                  ? Colors.red.withOpacity(0.55)
-                                  : Colors.red,
-                              fontSize: fs.sp(16),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.red.withOpacity(0.6),
-                            size: fs.w(24),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: fs.h(24)),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'End',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: fs.sp(16),
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                  SizedBox(height: fs.h(8)),
-                  GestureDetector(
-                    onTap: () => _selectTime(false),
-                    child: Container(
-                      width: double.infinity,
-                      height: fs.h(50),
-                      padding: EdgeInsets.symmetric(horizontal: fs.w(16)),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(fs.r(12)),
-                        border: Border.all(
-                          color: Colors.black.withOpacity(0.12),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _formatTime(endTime),
-                            style: TextStyle(
-                              color: endTime == null
-                                  ? Colors.red.withOpacity(0.55)
-                                  : Colors.red,
-                              fontSize: fs.sp(16),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.red.withOpacity(0.6),
-                            size: fs.w(24),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: EdgeInsets.all(fs.w(24)),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
+                    SizedBox(height: fs.h(8)),
+                    GestureDetector(
+                      onTap: () => _selectTime(true),
                       child: Container(
-                        height: fs.h(50),
+                        width: fs.w(295),
+                        constraints: BoxConstraints(
+                          maxWidth: fs.w(295),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: fs.w(16),
+                          vertical: fs.h(16),
+                        ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Colors.black.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(fs.r(12)),
                           border: Border.all(
-                            color: Colors.red.withOpacity(0.35),
+                            color: Colors.black.withOpacity(0.12),
                             width: 1,
                           ),
                         ),
-                        child: Center(
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: fs.sp(16),
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Inter',
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _formatTime(startTime),
+                              style: TextStyle(
+                                color: startTime == null
+                                    ? Colors.black.withOpacity(0.55)
+                                    : Colors.black,
+                                fontSize: fs.sp(16),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Inter',
+                              ),
                             ),
-                          ),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black.withOpacity(0.6),
+                              size: fs.w(24),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: fs.w(16)),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () async {
-                        await _saveTimes();
-                        if (mounted) {
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Container(
-                        height: fs.h(50),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(fs.r(12)),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Continue',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: fs.sp(16),
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: fs.h(16)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'End',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: fs.sp(14),
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    SizedBox(height: fs.h(8)),
+                    GestureDetector(
+                      onTap: () => _selectTime(false),
+                      child: Container(
+                        width: fs.w(295),
+                        constraints: BoxConstraints(
+                          maxWidth: fs.w(295),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: fs.w(16),
+                          vertical: fs.h(16),
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(fs.r(12)),
+                          border: Border.all(
+                            color: Colors.black.withOpacity(0.12),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _formatTime(endTime),
+                              style: TextStyle(
+                                color: endTime == null
+                                    ? Colors.black.withOpacity(0.55)
+                                    : Colors.black,
+                                fontSize: fs.sp(16),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black.withOpacity(0.6),
+                              size: fs.w(24),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: fs.h(24)),
+              Padding(
+                padding: EdgeInsets.all(fs.w(24)),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: fs.h(16)),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF2F2F2),
+                            borderRadius: BorderRadius.circular(fs.r(12)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                color: const Color(0xFFFB8624),
+                                fontSize: fs.sp(15),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: fs.w(10)),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          await _saveTimes();
+                          if (mounted) {
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: fs.h(16)),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFB8624),
+                            borderRadius: BorderRadius.circular(fs.r(12)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Continue',
+                              style: TextStyle(
+                                color: const Color(0xFFFFFFFF),
+                                fontSize: fs.sp(15),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1481,10 +1488,12 @@ class _NotificationsDialogState extends State<_NotificationsDialog> {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: fs.w(44)),
+      insetPadding: EdgeInsets.symmetric(horizontal: fs.w(16)),
       child: Container(
         width: fs.w(343),
-        height: fs.h(349),
+        constraints: BoxConstraints(
+          maxWidth: fs.w(343),
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(fs.r(20)),
@@ -1493,103 +1502,134 @@ class _NotificationsDialogState extends State<_NotificationsDialog> {
             width: 1,
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(fs.w(24)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Notifications',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: fs.sp(24),
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Inter',
+        child: IntrinsicHeight(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(fs.w(24)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Notifications',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: fs.sp(20),
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Inter',
+                        height: 1.2,
+                      ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(
-                      Icons.close,
-                      size: fs.w(28),
-                      color: Colors.red,
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: SizedBox(
+                        width: fs.w(24),
+                        height: fs.w(24),
+                        child: Icon(
+                          Icons.close,
+                          size: fs.w(24),
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
-              child: Text(
-                'Common',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: fs.sp(18),
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Inter',
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: fs.h(12)),
-            _buildToggleItem(
-              title: 'General Notification',
-              value: generalNotification,
-              onChanged: (value) {
-                setState(() => generalNotification = value);
-                _saveSetting('notif_general', value);
-              },
-            ),
-            _buildToggleItem(
-              title: 'Sound',
-              value: sound,
-              onChanged: (value) {
-                setState(() => sound = value);
-                _saveSetting('notif_sound', value);
-              },
-            ),
-            _buildToggleItem(
-              title: 'Vibrate',
-              value: vibrate,
-              onChanged: (value) {
-                setState(() => vibrate = value);
-                _saveSetting('notif_vibrate', value);
-              },
-            ),
-            SizedBox(height: fs.h(16)),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
-              child: Text(
-                'Others',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: fs.sp(18),
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Inter',
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: fs.w(72),
+                      height: fs.h(24),
+                      child: Text(
+                        'Common',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: fs.sp(16),
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: fs.h(12)),
+                    _buildToggleItem(
+                      title: 'General Notification',
+                      value: generalNotification,
+                      onChanged: (value) {
+                        setState(() => generalNotification = value);
+                        _saveSetting('notif_general', value);
+                      },
+                    ),
+                    SizedBox(height: fs.h(12)),
+                    _buildToggleItem(
+                      title: 'Sound',
+                      value: sound,
+                      onChanged: (value) {
+                        setState(() => sound = value);
+                        _saveSetting('notif_sound', value);
+                      },
+                    ),
+                    SizedBox(height: fs.h(12)),
+                    _buildToggleItem(
+                      title: 'Vibrate',
+                      value: vibrate,
+                      onChanged: (value) {
+                        setState(() => vibrate = value);
+                        _saveSetting('notif_vibrate', value);
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: fs.h(12)),
-            _buildToggleItem(
-              title: 'Tasks',
-              value: tasks,
-              onChanged: (value) {
-                setState(() => tasks = value);
-                _saveSetting('notif_tasks', value);
-              },
-            ),
-            _buildToggleItem(
-              title: 'Meeting Reminders',
-              value: meetingReminders,
-              onChanged: (value) {
-                setState(() => meetingReminders = value);
-                _saveSetting('notif_meeting', value);
-              },
-              isLast: true,
-            ),
-          ],
+              SizedBox(height: fs.h(24)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: fs.w(24)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: fs.w(55),
+                      height: fs.h(24),
+                      child: Text(
+                        'Others',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: fs.sp(16),
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: fs.h(12)),
+                    _buildToggleItem(
+                      title: 'Tasks',
+                      value: tasks,
+                      onChanged: (value) {
+                        setState(() => tasks = value);
+                        _saveSetting('notif_tasks', value);
+                      },
+                    ),
+                    SizedBox(height: fs.h(12)),
+                    _buildToggleItem(
+                      title: 'Meeting Reminders',
+                      value: meetingReminders,
+                      onChanged: (value) {
+                        setState(() => meetingReminders = value);
+                        _saveSetting('notif_meeting', value);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: fs.h(24)),
+            ],
+          ),
         ),
       ),
     );
@@ -1599,33 +1639,34 @@ class _NotificationsDialogState extends State<_NotificationsDialog> {
     required String title,
     required bool value,
     required ValueChanged<bool> onChanged,
-    bool isLast = false,
   }) {
     final fs = FigmaScale.of(context);
-    return Padding(
-      padding: EdgeInsets.only(
-        left: fs.w(24),
-        right: fs.w(24),
-        bottom: isLast ? 0 : fs.h(8),
-      ),
+    return SizedBox(
+      width: fs.w(295),
+      height: fs.h(20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.red,
-              fontSize: fs.sp(16),
-              fontWeight: FontWeight.w400,
-              fontFamily: 'Inter',
+          SizedBox(
+            width: fs.w(207.2),
+            height: fs.h(24),
+            child: Text(
+              title,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: fs.sp(16),
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Inter',
+              ),
             ),
           ),
           GestureDetector(
             onTap: () => onChanged(!value),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              width: fs.w(51),
-              height: fs.h(31),
+              width: fs.w(34.5),
+              height: fs.h(20),
               decoration: BoxDecoration(
                 color:
                     value ? const Color(0xFFFB8624) : const Color(0xFFE0E0E0),
@@ -1635,11 +1676,11 @@ class _NotificationsDialogState extends State<_NotificationsDialog> {
                 children: [
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 200),
-                    left: value ? fs.w(23) : fs.w(3),
-                    top: fs.h(3),
+                    left: value ? fs.w(16.5) : fs.w(2),
+                    top: fs.h(2),
                     child: Container(
-                      width: fs.w(25),
-                      height: fs.w(25),
+                      width: fs.w(16),
+                      height: fs.w(16),
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
