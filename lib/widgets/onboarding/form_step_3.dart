@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 
 import '../../theme/app_colors.dart';
+import '../../utils/figma_scale.dart';
 import '../onboarding_header.dart';
 import 'form_step_buttons.dart';
 
@@ -32,10 +33,11 @@ class FormStep3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(fs.w(20)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -117,28 +119,29 @@ class _OutlookLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return SizedBox(
-      width: 147,
-      height: 48,
+      width: fs.w(147),
+      height: fs.w(48),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           Positioned(
             left: 0,
             top: 0,
-            width: 48,
-            height: 48,
+            width: fs.w(48),
+            height: fs.w(48),
             child: _EmbeddedPngFromSvgAsset(
               svgAssetPath: 'assets/images/Outlook_logo.svg',
-              width: 48,
-              height: 48,
+              width: fs.w(48),
+              height: fs.w(48),
             ),
           ),
           Positioned(
-            left: 59,
-            top: 14,
-            width: 88,
-            height: 20,
+            left: fs.w(59),
+            top: fs.h(14),
+            width: fs.w(88),
+            height: fs.h(20),
             child: Image.asset(
               'assets/images/Outlook_text.png',
               fit: BoxFit.contain,
@@ -243,28 +246,29 @@ class OnboardingMiddleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 16),
+        Padding(
+          padding: EdgeInsets.only(top: fs.h(16)),
           child: Text(
             'Which calendar would you like to connect',
             textAlign: TextAlign.left,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 28,
+              fontSize: fs.sp(28),
               fontWeight: FontWeight.w800,
-              color: Color(0xFF000000),
+              color: const Color(0xFF000000),
               letterSpacing: -0.84,
               height: 36 / 28,
             ),
           ),
         ),
-        const SizedBox(height: 32),
-        _buildSelectableContainer(CalendarProvider.google),
-        const SizedBox(height: 16),
-        _buildSelectableContainer(CalendarProvider.outlook),
+        SizedBox(height: fs.h(32)),
+        _buildSelectableContainer(context, CalendarProvider.google),
+        SizedBox(height: fs.h(16)),
+        _buildSelectableContainer(context, CalendarProvider.outlook),
       ],
     );
   }
@@ -279,14 +283,15 @@ class OnboardingMiddleSection extends StatelessWidget {
     onSelectedProvidersChanged(next);
   }
 
-  Widget _buildSelectableContainer(CalendarProvider provider) {
+  Widget _buildSelectableContainer(BuildContext context, CalendarProvider provider) {
     final isSelected = selectedProviders.contains(provider);
+    final fs = FigmaScale.of(context);
 
     final Widget logo = provider == CalendarProvider.google
-        ? const _EmbeddedPngFromSvgAsset(
+        ? _EmbeddedPngFromSvgAsset(
             svgAssetPath: 'assets/images/google.svg',
-            width: 214,
-            height: 50,
+            width: fs.w(214),
+            height: fs.h(50),
           )
         : const _OutlookLogo();
 
@@ -294,20 +299,20 @@ class OnboardingMiddleSection extends StatelessWidget {
       onTap: () => _toggle(provider),
       child: Container(
         width: double.infinity,
-        constraints: const BoxConstraints(minHeight: 100),
-        padding: const EdgeInsets.all(20),
+        constraints: BoxConstraints(minHeight: fs.h(100)),
+        padding: EdgeInsets.all(fs.w(20)),
         decoration: BoxDecoration(
           color: const Color(0xFFF2F2F2),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-            bottomLeft: Radius.circular(8),
-            bottomRight: Radius.circular(8),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(fs.r(16)),
+            topRight: Radius.circular(fs.r(16)),
+            bottomLeft: Radius.circular(fs.r(8)),
+            bottomRight: Radius.circular(fs.r(8)),
           ),
           border: isSelected
               ? Border.all(
                   color: const Color(0xFFFB8624),
-                  width: 2,
+                  width: fs.w(2),
                 )
               : null,
         ),
@@ -320,8 +325,8 @@ class OnboardingMiddleSection extends StatelessWidget {
             const Spacer(),
             if (isSelected)
               SizedBox(
-                width: 32,
-                height: 32,
+                width: fs.w(32),
+                height: fs.w(32),
                 child: SvgPicture.asset(
                   'assets/images/CheckCircle.svg',
                   fit: BoxFit.contain,

@@ -3,20 +3,23 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../utils/figma_scale.dart';
+
 class OnboardingLogo extends StatelessWidget {
   const OnboardingLogo({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return SizedBox(
-      width: 166,
-      height: 36,
+      width: fs.w(166),
+      height: fs.h(36),
       child: Row(
         children: [
           // TODO: Replace with Image.asset for logo
           SizedBox(
-            width: 35.62,
-            height: 36,
+            width: fs.w(35.62),
+            height: fs.h(36),
             child: Stack(
               children: [
                 ClipPath(
@@ -31,8 +34,8 @@ class OnboardingLogo extends StatelessWidget {
                 ),
                 CustomPaint(
                   painter: _GradientBorderPainter(
-                    borderRadius: 10,
-                    strokeWidth: 1,
+                    borderRadius: fs.r(10),
+                    strokeWidth: fs.w(1),
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -44,18 +47,18 @@ class OnboardingLogo extends StatelessWidget {
                     ),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(fs.r(10)),
                     child: Padding(
-                      padding: const EdgeInsets.all(1.0),
+                      padding: EdgeInsets.all(fs.w(1)),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.10),
-                          borderRadius: BorderRadius.circular(9),
+                          borderRadius: BorderRadius.circular(fs.r(9)),
                         ),
                         child: Center(
                           child: SizedBox(
-                            width: 23.74,
-                            height: 24,
+                            width: fs.w(23.74),
+                            height: fs.h(24),
                             child: SvgPicture.asset(
                               'assets/images/kalendra_mark.svg',
                               fit: BoxFit.contain,
@@ -69,11 +72,11 @@ class OnboardingLogo extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: fs.w(8)),
           Expanded(
             child: SvgPicture.asset(
               'assets/images/kalendra_text.svg',
-              height: 36,
+              height: fs.h(36),
               fit: BoxFit.contain,
               alignment: Alignment.centerLeft,
             ),

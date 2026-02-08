@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../utils/figma_scale.dart';
 import '../onboarding_header.dart';
 import 'form_step_buttons.dart';
 
@@ -30,10 +31,11 @@ class FormStep2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(fs.w(20)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -148,32 +150,33 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 16),
+        Padding(
+          padding: EdgeInsets.only(top: fs.h(16)),
           child: Text(
             'Tell us a bit about you',
             textAlign: TextAlign.left,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 28,
+              fontSize: fs.sp(28),
               fontWeight: FontWeight.w800,
-              color: Color(0xFF000000),
+              color: const Color(0xFF000000),
               height: 36 / 28,
               letterSpacing: -0.84,
             ),
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: fs.h(24)),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(fs.r(8)),
           ),
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(fs.w(16)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -190,7 +193,7 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                   widget.onNatureOfWorkChanged(value);
                 },
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: fs.h(24)),
               _buildDropdownField(
                 index: 1,
                 heading: 'Current position',
@@ -204,7 +207,7 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                   widget.onCurrentPositionChanged(value);
                 },
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: fs.h(24)),
               _buildDropdownField(
                 index: 2,
                 heading: 'Time management goals',
@@ -232,6 +235,7 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
     required List<String> options,
     required ValueChanged<String> onSelect,
   }) {
+    final fs = FigmaScale.of(context);
     final isOpen = openDropdownIndex == index;
 
     return Column(
@@ -239,15 +243,15 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
       children: [
         Text(
           heading,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Inter',
-            fontSize: 14,
+            fontSize: fs.sp(14),
             fontWeight: FontWeight.w700,
-            color: Color(0xFF374151),
+            color: const Color(0xFF374151),
             height: 20 / 14,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: fs.h(8)),
         GestureDetector(
           onTap: () {
             setState(() {
@@ -256,16 +260,19 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
           },
           child: Container(
             width: double.infinity,
-            constraints: const BoxConstraints(minHeight: 56),
+            constraints: BoxConstraints(minHeight: fs.h(56)),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(fs.r(8)),
               border: Border.all(
                 color: const Color(0xFFD1D5DB),
                 width: 1,
               ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            padding: EdgeInsets.symmetric(
+              horizontal: fs.w(16),
+              vertical: fs.h(16),
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -275,7 +282,7 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 16,
+                      fontSize: fs.sp(16),
                       fontWeight: FontWeight.w500,
                       color: selectedValue != null
                           ? const Color(0xFF111827)
@@ -285,7 +292,7 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                 ),
                 Icon(
                   isOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                  size: 20,
+                  size: fs.w(20),
                   color: const Color(0xFF6B7280),
                 ),
               ],
@@ -293,12 +300,12 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
           ),
         ),
         if (isOpen) ...[
-          const SizedBox(height: 8),
+          SizedBox(height: fs.h(8)),
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(fs.r(8)),
               border: Border.all(
                 color: const Color(0xFFD1D5DB),
                 width: 1,
@@ -311,28 +318,30 @@ class _OnboardingMiddleSectionState extends State<OnboardingMiddleSection> {
                   onTap: () => onSelect(option),
                   child: Container(
                     width: double.infinity,
-                    constraints: const BoxConstraints(minHeight: 44),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    constraints: BoxConstraints(minHeight: fs.h(44)),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: fs.w(16),
+                      vertical: fs.h(12),
+                    ),
                     child: Row(
                       children: [
                         Expanded(
                           child: Text(
                             option,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF111827),
+                              fontSize: fs.sp(14),
+                              fontWeight:
+                                  isSelected ? FontWeight.w700 : FontWeight.w500,
+                              color: const Color(0xFF111827),
                             ),
                           ),
                         ),
                         if (isSelected)
-                          const Icon(
+                          Icon(
                             Icons.check,
-                            size: 20,
-                            color: Color(0xFFFB8624),
+                            size: fs.w(18),
+                            color: const Color(0xFFFB8624),
                           ),
                       ],
                     ),

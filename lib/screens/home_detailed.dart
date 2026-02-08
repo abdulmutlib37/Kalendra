@@ -16,6 +16,7 @@ class HomeDetailedScreen extends StatefulWidget {
 
 class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
   bool _isListening = false;
+  bool _isGenerating = false;
 
   String _getCurrentDate() {
     final now = DateTime.now();
@@ -66,20 +67,26 @@ class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
             ),
           ),
           Positioned(
-            left: (screenWidth - fs.w(509.95)) / 2,
-            top: fs.h(233),
+            left: fs.w(240.31),
+            top: fs.h(201.22),
             child: Container(
-              width: fs.w(509.95),
-              height: fs.h(482),
+              width: fs.w(198.69),
+              height: fs.h(198.69),
               decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFFFB8624).withValues(alpha: 0.4),
-                    const Color(0xFF7B92A4).withValues(alpha: 0.3),
-                    Colors.transparent,
-                  ],
-                  stops: const [0.2, 0.6, 1.0],
-                ),
+                shape: BoxShape.circle,
+                color: const Color(0xFFFB8624),
+              ),
+            ),
+          ),
+          Positioned(
+            left: fs.w(-9.5),
+            top: fs.h(274.22),
+            child: Container(
+              width: fs.w(198.69),
+              height: fs.h(198.69),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFFFB8624),
               ),
             ),
           ),
@@ -102,14 +109,28 @@ class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
               ),
             ),
           ),
+          Positioned(
+            left: fs.w(0),
+            bottom: fs.h(140),
+            child: SvgPicture.asset(
+              'assets/images/line.svg',
+              width: fs.w(430),
+              height: fs.h(260.95),
+              fit: BoxFit.contain,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
           Column(
             children: [
               SizedBox(height: safeAreaTop),
-              _buildHeader(fs),
+              _isGenerating ? _buildGeneratingHeader(fs) : _buildHeader(fs),
               Expanded(
-                child: _buildMainContent(
-                  fs,
-                ),
+                child: _isGenerating
+                    ? _buildGeneratingContent(fs)
+                    : _buildMainContent(fs),
               ),
               _buildMicrophoneButton(fs),
               SizedBox(height: safeAreaBottom + fs.h(20)),
@@ -158,7 +179,7 @@ class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
   ) {
     final screenWidth = fs.screenW;
     final welcomeLeft = fs.w(117.87);
-    final welcomeTop = fs.h(65.0);
+    final welcomeTop = fs.h(35.0);
     final welcomeWidth = fs.w(194.26);
 
     return Stack(
@@ -193,7 +214,9 @@ class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    'Welcome, Start Scheduling',
+                    _isListening
+                        ? "Go ahead, I'm listening"
+                        : 'Welcome, Start Scheduling',
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.visible,
@@ -220,7 +243,7 @@ class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
         ),
         Positioned(
           left: fs.w(153),
-          top: fs.h(234),
+          top: fs.h(214),
           child: Container(
             width: fs.w(124),
             height: fs.h(30),
@@ -258,12 +281,14 @@ class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
         ),
         Positioned(
           left: fs.w(49),
-          top: fs.h(283),
+          top: fs.h(263),
           child: SizedBox(
             width: fs.w(332),
             height: fs.h(62),
             child: Text(
-              'How can I help with your\ncalendar today?',
+              _isListening
+                  ? 'Listening now....'
+                  : 'How can I help with your\ncalendar today?',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFFFFFFFF),
@@ -279,18 +304,122 @@ class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
     );
   }
 
+  Widget _buildGeneratingContent(FigmaScale fs) {
+    return Center(
+      child: Text(
+        'Generating response...',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Color(0xFFFFFFFF),
+          fontSize: fs.sp(22),
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Inter',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGeneratingHeader(FigmaScale fs) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        fs.w(16),
+        fs.h(16),
+        fs.w(16),
+        fs.h(8),
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _isGenerating = false;
+                _isListening = false;
+              });
+            },
+            child: SvgPicture.asset(
+              'assets/images/rarrow.svg',
+              width: fs.w(40),
+              height: fs.w(40),
+              fit: BoxFit.contain,
+            ),
+          ),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: const Color(0xFF484848),
+                  ),
+                ),
+                SizedBox(width: fs.w(8)),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: fs.w(16),
+                    vertical: fs.h(8),
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(fs.r(20)),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF2F3641),
+                        Color(0xFF2F3741),
+                      ],
+                    ),
+                  ),
+                  child: Text(
+                    _getCurrentDate(),
+                    style: TextStyle(
+                      color: Color(0xFFFFFFFF),
+                      fontSize: fs.sp(10),
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: -0.3,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                ),
+                SizedBox(width: fs.w(8)),
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: const Color(0xFF484848),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: fs.w(12)),
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, AppRoutes.settings),
+            child: SvgPicture.asset(
+              'assets/images/settings.svg',
+              width: fs.w(40),
+              height: fs.w(40),
+              fit: BoxFit.contain,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMicrophoneButton(FigmaScale fs) {
     return Column(
       children: [
-        CustomPaint(
-          size: Size(fs.screenW, fs.h(180)),
-          painter: const WavePainter(),
-        ),
-        SizedBox(height: fs.h(30)),
         GestureDetector(
           onTap: () {
             setState(() {
-              _isListening = !_isListening;
+              if (_isGenerating) {
+                _isGenerating = false;
+                _isListening = false;
+              } else if (_isListening) {
+                _isListening = false;
+                _isGenerating = true;
+              } else {
+                _isListening = true;
+              }
             });
           },
           child: SizedBox(
@@ -341,7 +470,11 @@ class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
                   width: fs.w(42),
                   height: fs.w(42),
                   child: SvgPicture.asset(
-                    'assets/images/Microphone.svg',
+                    _isGenerating
+                        ? 'assets/images/Stop.svg'
+                        : (_isListening
+                            ? 'assets/images/paused.svg'
+                            : 'assets/images/Microphone.svg'),
                     width: fs.w(42),
                     height: fs.w(42),
                     fit: BoxFit.contain,
@@ -355,80 +488,4 @@ class _HomeDetailedScreenState extends State<HomeDetailedScreen> {
       ],
     );
   }
-}
-
-class WavePainter extends CustomPainter {
-  const WavePainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final fillPaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-        colors: [
-          Color(0xFF2F3641),
-          Color(0xFF2F3741),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.fill;
-
-    final strokePaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-        colors: [
-          Color(0xFF2F3641),
-          Color(0xFF2F3741),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    final path = Path();
-    path.moveTo(0, size.height);
-
-    final controlPointY = size.height * 0.3;
-    final midPointY = size.height * 0.5;
-
-    path.quadraticBezierTo(
-      size.width * 0.25,
-      controlPointY,
-      size.width * 0.5,
-      midPointY,
-    );
-
-    path.quadraticBezierTo(
-      size.width * 0.75,
-      size.height * 0.7,
-      size.width,
-      size.height,
-    );
-
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.close();
-
-    canvas.drawPath(path, fillPaint);
-
-    final strokePath = Path();
-    strokePath.moveTo(0, size.height);
-    strokePath.quadraticBezierTo(
-      size.width * 0.25,
-      controlPointY,
-      size.width * 0.5,
-      midPointY,
-    );
-    strokePath.quadraticBezierTo(
-      size.width * 0.75,
-      size.height * 0.7,
-      size.width,
-      size.height,
-    );
-
-    canvas.drawPath(strokePath, strokePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

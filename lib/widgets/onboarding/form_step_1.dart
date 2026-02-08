@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../utils/figma_scale.dart';
 import '../onboarding_header.dart';
 import 'form_step_buttons.dart';
 
@@ -22,10 +23,11 @@ class FormStep1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(fs.w(20)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -72,42 +74,43 @@ class OnboardingMiddleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 16),
+        Padding(
+          padding: EdgeInsets.only(top: fs.h(16)),
           child: Text(
             'Which of these do you\nresonate with?',
             textAlign: TextAlign.left,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 28,
+              fontSize: fs.sp(28),
               fontWeight: FontWeight.w800,
-              color: Color(0xFF000000),
+              color: const Color(0xFF000000),
               height: 36 / 28,
               letterSpacing: -0.84,
             ),
           ),
         ),
-        const SizedBox(height: 10),
-        const Text(
+        SizedBox(height: fs.h(10)),
+        Text(
           'Select all that apply',
           textAlign: TextAlign.left,
           style: TextStyle(
             fontFamily: 'Inter',
-            fontSize: 20,
+            fontSize: fs.sp(20),
             fontWeight: FontWeight.w400,
-            color: Color(0xFF000000),
+            color: const Color(0xFF000000),
             height: 36 / 20,
             letterSpacing: -0.6,
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: fs.h(24)),
         ...List.generate(options.length, (index) {
           final isSelected = selectedOptions.contains(index);
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: EdgeInsets.only(bottom: fs.h(12)),
             child: GestureDetector(
               onTap: () {
                 final next = Set<int>.from(selectedOptions);
@@ -119,10 +122,10 @@ class OnboardingMiddleSection extends StatelessWidget {
                 onSelectedOptionsChanged(next);
               },
               child: Container(
-                height: 64,
+                height: fs.h(64),
                 decoration: BoxDecoration(
                   color: isSelected ? const Color(0xFFF5F5F4) : Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(fs.r(8)),
                   border: Border.all(
                     color: const Color(0xFFD1D5DB),
                     width: 1,
@@ -135,17 +138,20 @@ class OnboardingMiddleSection extends StatelessWidget {
                     ),
                   ],
                 ),
-                constraints: const BoxConstraints(minHeight: 64),
-                padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 20),
+                constraints: BoxConstraints(minHeight: fs.h(64)),
+                padding: EdgeInsets.symmetric(
+                  horizontal: fs.w(26),
+                  vertical: fs.h(20),
+                ),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     options[index],
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 14,
+                      fontSize: fs.sp(14),
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF000000),
+                      color: const Color(0xFF000000),
                       height: 24 / 14,
                     ),
                   ),

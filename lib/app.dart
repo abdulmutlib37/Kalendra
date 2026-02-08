@@ -8,6 +8,7 @@ import 'screens/onboarding.dart';
 import 'screens/settings.dart';
 import 'screens/task_creation.dart';
 import 'screens/text_chat.dart';
+import 'screens/unified_calendar.dart';
 
 class NewFrontendApp extends StatelessWidget {
   const NewFrontendApp({super.key});
@@ -30,6 +31,7 @@ class NewFrontendApp extends StatelessWidget {
         AppRoutes.textChat: (_) => const TextChatScreen(),
         AppRoutes.taskCreation: (_) => const TaskCreationScreen(),
         AppRoutes.settings: (_) => const SettingsScreen(),
+        AppRoutes.unifiedCalendar: (_) => const UnifiedCalendarScreen(),
       },
     );
   }

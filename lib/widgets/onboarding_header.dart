@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/app_colors.dart';
+import '../utils/figma_scale.dart';
 import 'onboarding_logo.dart';
 
 class OnboardingHeader extends StatelessWidget {
@@ -18,17 +19,24 @@ class OnboardingHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return SafeArea(
       bottom: false,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: EdgeInsets.symmetric(
+          horizontal: fs.w(20),
+          vertical: fs.h(12),
+        ),
         child: Row(
           children: [
             if (showBack)
               IconButton(
                 padding: EdgeInsets.zero,
-                iconSize: 44,
-                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+                iconSize: fs.w(44),
+                constraints: BoxConstraints(
+                  minWidth: fs.w(44),
+                  minHeight: fs.w(44),
+                ),
                 onPressed: onBackPressed,
                 icon: SvgPicture.asset(
                   'assets/images/Icon.svg',
@@ -40,25 +48,25 @@ class OnboardingHeader extends StatelessWidget {
                 ),
               )
             else
-              const SizedBox(width: 44, height: 44),
+              SizedBox(width: fs.w(44), height: fs.w(44)),
             Expanded(
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 200),
+                  constraints: BoxConstraints(maxWidth: fs.w(200)),
                   child: const OnboardingLogo(),
                 ),
               ),
             ),
             SizedBox(
-              width: 44,
-              height: 44,
+              width: fs.w(44),
+              height: fs.w(44),
               child: stepLabel == null
                   ? null
                   : Center(
                       child: Text(
                         stepLabel!,
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontSize: fs.sp(16),
                           fontWeight: FontWeight.w600,
                           color: AppColors.textBlack,
                         ),

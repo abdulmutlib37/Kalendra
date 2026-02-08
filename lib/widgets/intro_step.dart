@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../utils/figma_scale.dart';
 import 'onboarding_header.dart';
 import 'primary_button.dart';
 
@@ -12,10 +13,11 @@ class IntroStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(fs.w(20)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -26,6 +28,7 @@ class IntroStep extends StatelessWidget {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     style: AppTextStyles.headline48ExtraBold().copyWith(
+                      fontSize: fs.sp(48),
                       letterSpacing: -1.44,
                     ),
                     children: const [
@@ -38,11 +41,12 @@ class IntroStep extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: fs.h(12)),
                 Text(
                   'this only takes a moment',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.body20Regular().copyWith(
+                    fontSize: fs.sp(20),
                     letterSpacing: -0.6,
                   ),
                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../utils/figma_scale.dart';
 import '../onboarding_header.dart';
 import '../primary_button.dart';
 
@@ -17,50 +18,52 @@ class GetStartedStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(fs.w(20)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             OnboardingHeader(showBack: true, onBackPressed: onBackPressed),
             Center(
               child: SizedBox(
-                width: 347,
-                height: 360,
+                width: fs.w(347),
+                height: fs.h(360),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 180,
-                      height: 180,
+                      width: fs.w(180),
+                      height: fs.w(180),
                       child: Image.asset(
                         'assets/images/calendar_3d.png',
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
+                          return Icon(
                             Icons.calendar_month,
-                            size: 120,
+                            size: fs.w(120),
                             color: AppColors.primaryOrange,
                           );
                         },
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: fs.h(24)),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding: EdgeInsets.symmetric(horizontal: fs.w(8)),
                       child: Text(
                         "You’re all set! Let’s plan\nyour next meeting.",
                         textAlign: TextAlign.center,
                         style: AppTextStyles.headline28ExtraBold().copyWith(
+                          fontSize: fs.sp(28),
                           letterSpacing: -0.84,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: fs.h(16)),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding: EdgeInsets.symmetric(horizontal: fs.w(8)),
                       child: Text(
                         'You can change this anytime in app settings.',
                         textAlign: TextAlign.center,
@@ -69,6 +72,7 @@ class GetStartedStep extends StatelessWidget {
                           forceStrutHeight: true,
                         ),
                         style: AppTextStyles.body20Regular().copyWith(
+                          fontSize: fs.sp(20),
                           height: 36 / 20,
                           letterSpacing: -0.6,
                         ),

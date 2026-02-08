@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../utils/figma_scale.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
@@ -15,22 +16,25 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return SizedBox(
       width: double.infinity,
-      height: 60,
+      height: fs.h(60),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryOrange,
           foregroundColor: AppColors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(fs.r(16)),
           ),
           elevation: 0,
         ),
         child: Text(
           label,
-          style: AppTextStyles.button20ExtraBold(color: AppColors.white),
+          style: AppTextStyles.button20ExtraBold(color: AppColors.white).copyWith(
+            fontSize: fs.sp(20),
+          ),
         ),
       ),
     );

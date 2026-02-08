@@ -1,0 +1,22 @@
+<svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+<foreignObject x="-47.6667" y="-47.6667" width="137.333" height="137.333"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(23.83px);clip-path:url(#bgblur_0_193_23395_clip_path);height:100%;width:100%"></div></foreignObject><g data-figma-bg-blur-radius="47.6667">
+<circle cx="21" cy="21" r="21" fill="white" fill-opacity="0.1"/>
+<circle cx="21" cy="21" r="20" stroke="url(#paint0_linear_193_23395)" stroke-opacity="0.2" stroke-width="2"/>
+</g>
+<path d="M14.25 24C15.4926 24 16.5 22.9926 16.5 21.75C16.5 20.5074 15.4926 19.5 14.25 19.5C13.0074 19.5 12 20.5074 12 21.75C12 22.9926 13.0074 24 14.25 24Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21 19.5C22.2426 19.5 23.25 18.4926 23.25 17.25C23.25 16.0074 22.2426 15 21 15C19.7574 15 18.75 16.0074 18.75 17.25C18.75 18.4926 19.7574 19.5 21 19.5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M27.75 27C28.9926 27 30 25.9926 30 24.75C30 23.5074 28.9926 22.5 27.75 22.5C26.5074 22.5 25.5 23.5074 25.5 24.75C25.5 25.9926 26.5074 27 27.75 27Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.25 12.75V19.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M27.75 12.75V22.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21 12.75V15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.25 24V29.25" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M27.75 27V29.25" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21 19.5V29.25" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<defs>
+<clipPath id="bgblur_0_193_23395_clip_path" transform="translate(47.6667 47.6667)"><circle cx="21" cy="21" r="21"/>
+</clipPath><linearGradient id="paint0_linear_193_23395" x1="32.7115" y1="49.2692" x2="14.269" y2="51.2521" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FB8624"/>
+<stop offset="1" stop-color="white"/>
+</linearGradient>
+</defs>
+</svg>

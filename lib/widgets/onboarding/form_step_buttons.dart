@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../utils/figma_scale.dart';
 
 class FormStepButtons extends StatelessWidget {
   const FormStepButtons({
@@ -15,20 +16,21 @@ class FormStepButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fs = FigmaScale.of(context);
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 60),
+      constraints: BoxConstraints(minHeight: fs.h(60)),
       child: Row(
         children: [
           Expanded(
             child: SizedBox(
-              height: 60,
+              height: fs.h(60),
               child: ElevatedButton(
                 onPressed: onSkipPressed,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.lightGrey,
                   foregroundColor: AppColors.primaryOrange,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(fs.r(16)),
                   ),
                   elevation: 0,
                 ),
@@ -36,28 +38,29 @@ class FormStepButtons extends StatelessWidget {
                   'Skip',
                   style: AppTextStyles.button20ExtraBold(
                     color: AppColors.primaryOrange,
-                  ),
+                  ).copyWith(fontSize: fs.sp(20)),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: fs.w(14)),
           Expanded(
             child: SizedBox(
-              height: 60,
+              height: fs.h(60),
               child: ElevatedButton(
                 onPressed: onContinuePressed,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryOrange,
                   foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(fs.r(16)),
                   ),
                   elevation: 0,
                 ),
                 child: Text(
                   'Continue',
-                  style: AppTextStyles.button20ExtraBold(color: AppColors.white),
+                  style: AppTextStyles.button20ExtraBold(color: AppColors.white)
+                      .copyWith(fontSize: fs.sp(20)),
                 ),
               ),
             ),
